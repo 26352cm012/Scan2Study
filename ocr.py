@@ -11,7 +11,7 @@ def make_study_helpers(text: str, limit: int = 5):
     """Create simple extractive revision notes and recall prompts, not AI output."""
     sentences = [
         item.strip()
-        for item in re.split(r"(?<=[.!?])\\s+", re.sub(r"\\s+", " ", text))
+        for item in re.split(r"(?<=[.!?])\s+", re.sub(r"\s+", " ", text))
         if len(item.strip()) > 25
     ]
     summary = sentences[:limit] or ([text[:500]] if text else [])
