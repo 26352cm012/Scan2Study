@@ -5,7 +5,7 @@ from flask import Flask, jsonify, request, send_from_directory
 from flask_cors import CORS
 from PIL import Image, UnidentifiedImageError
 from ocr import extract_text_from_image, make_study_helpers, simplify_text
-from ai_explanations import AIConfigurationError, AIProviderError, generate_ai_explanation
+from ai_explanations import AIConfigurationError, AIProviderError, generate_ai_explanation, generate_chat_reply
 
 app = Flask(__name__)
 app.config["MAX_CONTENT_LENGTH"] = 10 * 1024 * 1024
@@ -88,6 +88,72 @@ def explain_text():
         app.logger.exception("Unexpected AI explanation error")
         return jsonify({"error": "Something went wrong while creating the AI explanation."}), 500
 
+    return jsonify(result)
+
+
+@app.post("/api/chat")
+def chat():
+    """Answer a short Ask Scan2Study conversation using the configured AI model."""
+    data = request.get_json(silent=True)
+    if not isinstance(data, dict):
+        return jsonify({"error": "Send your chat messages as JSON."}), 400
+    raw_messages = data.get("messages")
+    if not isinstance(raw_messages, list) or not raw_messages:
+        return jsonify({"error": "Type a question to start chatting."}), 400
+    if len(raw_messages) > 10:
+        return jsonify({"error": "This chat turn can include up to 10 recent messages. Start a new chat to continue."}), 400
+
+    messages = []
+    total_chars = 0
+    for item in raw_messages:
+        if not isinstance(item, dict) or item.get("role") not in {"user", "assistant"}:
+            return jsonify({"error": "Chat messages must have a user or assistant role."}), 400
+        content = item.get("content")
+        if not isinstance(content, str) or not content.strip():
+            return jsonify({"error": "Chat messages cannot be empty."}), 400
+        content = content.strip()
+        if len(content) > 3000:
+            return jsonify({"error": "Please keep each chat message under 3,000 characters."}), 413
+        total_chars += len(content)
+        messages.append({"role": item["role"], "content": content})
+    if total_chars > 10000:
+        return jsonify({"error": "Please start a new chat with a shorter conversation."}), 413
+    if messages[-1]["role"] != "user":
+        return jsonify({"error": "The last chat message must be your question."}), 400
+    if not os.getenv("OPENAI_API_KEY", "").strip():
+        return jsonify({
+            "error": "Ask Scan2Study needs a configured AI backend before it can answer. Please try again after the backend is set up."
+        }), 503
+
+    now = time.time()
+    client_ip = (
+        request.headers.get("X-Forwarded-For", "").split(",")[0].strip()
+        or request.remote_addr
+        or "unknown"
+    )
+    recent_calls = [
+        stamp for stamp in _AI_CALLS_BY_IP.get(client_ip, [])
+        if now - stamp < 3600
+    ]
+    if len(recent_calls) >= _AI_MAX_CALLS_PER_HOUR:
+        return jsonify({
+            "error": "This prototype has reached its AI request limit for this hour. Please try again later."
+        }), 429
+    recent_calls.append(now)
+    _AI_CALLS_BY_IP[client_ip] = recent_calls
+    if len(_AI_CALLS_BY_IP) > 1000:
+        _AI_CALLS_BY_IP.clear()
+
+    try:
+        result = generate_chat_reply(messages)
+    except AIConfigurationError:
+        return jsonify({"error": "The AI chat is not configured on the backend yet."}), 503
+    except AIProviderError:
+        app.logger.warning("AI chat provider request failed.")
+        return jsonify({"error": "Ask Scan2Study could not get an answer right now. Please try again."}), 502
+    except Exception:
+        app.logger.exception("Unexpected AI chat error")
+        return jsonify({"error": "Something went wrong while answering. Please try again."}), 500
     return jsonify(result)
 
 
