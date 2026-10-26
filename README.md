@@ -1,25 +1,23 @@
 # 📚 Scan2Study
 
-Scan2Study turns photos of study material into searchable text and quick revision prompts.
+Scan2Study is a study prototype that helps turn textbook material into easier-to-read text.
 
-## What works now
+## Prototype experience
 
-- Responsive frontend for uploading and previewing JPG, PNG, and WEBP images
-- **Full-stack mode:** Flask serves the frontend and handles OCR through a Python API
-- **Static-site mode:** GitHub Pages keeps working with browser-side Tesseract.js OCR
-- Basic extractive revision notes and active-recall prompts
-- Copy extracted text and download notes as a text file
+1. Welcome page with a guided scroll-down flow.
+2. Upload a textbook image or paste text.
+3. Choose **Text meaning** or **Quick study shortcut**.
+4. Open a separate results page with the original material and an easier-to-read version side by side.
+5. Copy either version or download both as a text file.
 
-**Important:** The summary and practice prompts are rule-based, not AI-generated. Accounts, cloud-saved notes, and an AI tutor are not implemented yet.
+## How it works today
 
-## Architecture
+- **Frontend:** HTML, CSS, and JavaScript (\`index.html\` and \`result.html\`)
+- **Full-stack option:** Python + Flask serves the page and exposes the OCR API (\`app.py\`)
+- **OCR:** Tesseract.js in the browser on GitHub Pages, or Tesseract OCR through \`pytesseract\` when running with Flask
+- **Easy wording:** currently a conservative set of word substitutions, not an AI-generated explanation
 
-- **Frontend:** HTML, CSS, and JavaScript (`index.html`)
-- **Backend:** Python + Flask (`app.py`)
-- **OCR:** Tesseract OCR through `pytesseract`
-- **Image handling:** Pillow
-
-When the page is served by Flask, it checks `/api/health` and sends uploaded images to `/api/process`. When served as a static site such as GitHub Pages, it falls back to in-browser Tesseract.js. The Flask API processes uploads in memory and does not save the uploaded images to disk.
+**Important:** The easy version will not simplify every sentence and may miss context or nuance. Check it against the textbook. AI explanations, user accounts, and saved study history are not implemented yet.
 
 ## Run the full-stack app locally
 
@@ -27,51 +25,44 @@ You need Python 3.10+ and the Tesseract OCR system program installed.
 
 ### 1. Install Tesseract
 
-- **Windows:** Install the Tesseract OCR application and ensure its install folder is on PATH.
-- **Ubuntu/Debian:** `sudo apt-get update && sudo apt-get install -y tesseract-ocr`
-- **macOS:** `brew install tesseract`
+- **Windows:** Install Tesseract OCR and ensure its installation folder is on PATH.
+- **Ubuntu/Debian:** \`sudo apt-get update && sudo apt-get install -y tesseract-ocr\`
+- **macOS:** \`brew install tesseract\`
 
-### 2. Create a virtual environment and install dependencies
-
-From the repository folder:
+### 2. Install Python dependencies and start Flask
 
 **Windows (Command Prompt):**
 
-```bat
+\`\`\`bat
 python -m venv .venv
 .venv\\Scripts\\activate
 pip install -r requirements.txt
 python app.py
-```
+\`\`\`
 
 **macOS/Linux:**
 
-```bash
+\`\`\`bash
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 python app.py
-```
+\`\`\`
 
-Then open http://127.0.0.1:5000 in your browser. The frontend and backend are served together by Flask.
+Then open \`http://127.0.0.1:5000\`. Flask serves both the main page and the results page.
 
-### API endpoints
+## API endpoints
 
-- `GET /` — serves the website
-- `GET /api/health` — checks if the backend is running
-- `POST /api/process` — processes an image sent as multipart form data in the `image` field
+- \`GET /\` — website
+- \`GET /result.html\` — comparison/results page
+- \`GET /api/health\` — backend health check
+- \`POST /api/process\` — process an image sent in the multipart \`image\` field
 
-Example API request:
+Uploaded images are limited to 10 MB and accepted as valid JPG, PNG, or WEBP. The backend processes images in memory and does not save uploaded images to disk.
 
-```bash
-curl -X POST http://127.0.0.1:5000/api/process -F "image=@notes.jpg"
-```
+## Hosting
 
-Images are limited to 10 MB and accepted only when they are valid JPG, PNG, or WEBP files.
-
-## Public website vs. full-stack hosting
-
-GitHub Pages can host the static frontend, but it cannot run Python Flask. The public GitHub Pages version therefore uses browser-side OCR. To run the frontend and Python backend together on a public URL, the Flask application must be deployed to a Python-capable web host. You do not need to link an account just to develop or run the app locally.
+GitHub Pages hosts the static prototype and uses browser-side OCR. It cannot run Python Flask. The Python backend can be tested locally or deployed to a Python-capable host later; no account linking is required to work on the code.
 
 ## Repository
 
