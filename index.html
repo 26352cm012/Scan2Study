@@ -1,328 +1,77 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#f7f8fc">
-  <meta name="description" content="Turn photos of your notes into searchable text and quick revision materials with Scan2Study.">
-  <title>Scan2Study — Learn smarter</title>
-  <style>
-    :root{--ink:#172033;--muted:#68738a;--line:#e6eaf2;--paper:#fff;--bg:#f7f8fc;--blue:#4f63f6;--blue-dark:#3548d9;--mint:#dff8ed;--shadow:0 18px 50px rgba(28,39,76,.08)}
-    *{box-sizing:border-box}
-    body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.55}
-    button,input{font:inherit} button{cursor:pointer}
-    .shell{max-width:1120px;margin:auto;padding:0 24px}
-    nav{height:82px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #e9ecf4}
-    .brand{display:flex;align-items:center;gap:11px;font-weight:850;font-size:21px;letter-spacing:-.6px}
-    .brand-icon{width:42px;height:42px;border-radius:14px;background:var(--blue);display:grid;place-items:center;color:white;font-size:21px;box-shadow:0 7px 18px #4f63f633}
-    .nav-note{font-size:13px;color:var(--muted);font-weight:650}
-    .hero{padding:54px 0 30px;text-align:center}
-    .eyebrow{display:inline-flex;gap:8px;align-items:center;border:1px solid #e1e6ff;background:#f0f2ff;color:var(--blue-dark);border-radius:999px;padding:7px 13px;font-size:12px;font-weight:800;letter-spacing:.4px}
-    h1{font-size:clamp(36px,5.2vw,60px);line-height:1.06;letter-spacing:-2.8px;margin:20px 0 16px;font-weight:850}
-    h1 span{color:var(--blue)}
-    .hero p{max-width:610px;margin:0 auto;color:var(--muted);font-size:17px}
-    .workspace{display:grid;grid-template-columns:minmax(0,1.03fr) minmax(0,.97fr);gap:22px;padding:24px 0 60px;align-items:start}
-    .card{background:var(--paper);border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow);overflow:hidden}
-    .card-head{padding:22px 24px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px}
-    .card-head h2{font-size:17px;letter-spacing:-.4px;margin:0}
-    .step{font-size:11px;font-weight:850;color:var(--blue);background:#eef0ff;padding:6px 9px;border-radius:8px}
-    .upload-zone{margin:0 20px 20px;border:1.5px dashed #cdd4e8;background:#fafbff;border-radius:17px;min-height:245px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:22px;transition:.2s}
-    .upload-zone.drag{border-color:var(--blue);background:#f0f2ff}
-    .upload-symbol{width:56px;height:56px;border-radius:18px;background:#edf0ff;display:grid;place-items:center;font-size:27px;margin-bottom:13px}
-    .upload-zone strong{font-size:16px}
-    .upload-zone p{font-size:13px;color:var(--muted);margin:6px 0 16px}
-    .btn{border:0;border-radius:12px;padding:12px 17px;background:var(--blue);color:white;font-weight:750;font-size:13px;box-shadow:0 7px 16px #4f63f62b;transition:transform .15s,background .15s}
-    .btn:hover{background:var(--blue-dark);transform:translateY(-1px)}
-    .btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
-    .btn.secondary{background:white;color:var(--ink);border:1px solid var(--line);box-shadow:none}
-    .file-meta{display:none;align-items:center;gap:12px;padding:0 22px 20px}
-    .preview{width:58px;height:58px;object-fit:cover;border-radius:12px;background:#f0f2f8;border:1px solid var(--line)}
-    .file-info{min-width:0;flex:1}
-    .file-info strong{display:block;font-size:13px;overflow-wrap:anywhere}
-    .file-info span{font-size:12px;color:var(--muted)}
-    .remove{border:1px solid var(--line);background:white;border-radius:9px;padding:7px 10px;font-size:12px}
-    .privacy{padding:0 22px 20px;color:var(--muted);font-size:11px;display:flex;align-items:center;gap:7px}
-    .privacy span{color:#19966b}
-    .actions{padding:0 20px 22px;display:flex;gap:10px}
-    .actions .btn{flex:1}
-    .status{display:none;margin:0 20px 20px;padding:12px 14px;border-radius:12px;background:#f1f3ff;color:#3446b5;font-size:12px}
-    .progress{height:5px;background:#e1e6ff;border-radius:99px;overflow:hidden;margin-top:8px}
-    .progress span{display:block;height:100%;width:0;background:var(--blue);transition:width .25s}
-    .result-card{min-height:440px}
-    .empty-state{min-height:330px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:35px;color:var(--muted)}
-    .empty-art{width:100px;height:100px;border-radius:30px;background:linear-gradient(145deg,#f0f2ff,#e2f9f0);display:grid;place-items:center;font-size:42px;margin-bottom:20px}
-    .empty-state strong{color:var(--ink);font-size:16px}
-    .empty-state p{font-size:13px;max-width:245px;margin:7px auto 0}
-    .results{display:none;padding:0 22px 24px}
-    .tabs{display:flex;gap:6px;background:#f3f5fa;padding:5px;border-radius:12px;margin-bottom:17px}
-    .tab{flex:1;border:0;background:transparent;border-radius:9px;padding:9px 6px;color:var(--muted);font-size:12px;font-weight:750}
-    .tab.active{background:white;color:var(--blue-dark);box-shadow:0 2px 7px #1b28520e}
-    .panel{display:none}.panel.active{display:block}
-    .panel h3{font-size:14px;margin:0 0 9px}
-    .panel p,.panel li{font-size:13px;color:#4f5b71}
-    .panel ul{padding-left:19px}
-    .text-output{white-space:pre-wrap;overflow-wrap:anywhere;max-height:310px;overflow:auto;background:#fafbfe;border:1px solid var(--line);border-radius:12px;padding:14px;font-size:12px;color:#465168}
-    .result-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
-    .result-actions .btn{padding:9px 12px;font-size:12px}
-    .feature-row{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;padding-bottom:52px}
-    .feature{border:1px solid var(--line);border-radius:17px;background:white;padding:19px}
-    .feature .emoji{font-size:23px}.feature h3{font-size:14px;margin:10px 0 5px}.feature p{font-size:12px;color:var(--muted);margin:0}
-    footer{text-align:center;color:#8992a5;font-size:11px;padding:0 0 28px}
-    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
-    @media(max-width:760px){.shell{padding:0 16px}nav{height:70px}.nav-note{font-size:11px}.hero{padding:40px 0 12px}h1{letter-spacing:-1.7px}.hero p{font-size:15px}.workspace{grid-template-columns:1fr;padding-top:18px;gap:16px}.result-card{min-height:0}.empty-state{min-height:240px}.feature-row{grid-template-columns:1fr;gap:10px;padding-bottom:36px}.feature{display:flex;gap:13px;align-items:flex-start}.feature h3{margin-top:0}.feature .emoji{padding-top:1px}}
-    @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
-  </style>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f7f8ff">
+<meta name="description" content="Turn textbook photos into easier study notes with Scan2Study."><title>Scan2Study — Make studying easier</title>
+<style>
+:root{--ink:#18223b;--muted:#68728b;--line:#e4e8f4;--bg:#f7f8ff;--blue:#5365f5;--dark:#3949d8;--paper:#fff;--soft:#efeeff;--shadow:0 18px 56px #232c6410}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.6}button,input,textarea{font:inherit}button{cursor:pointer}a{color:inherit}
+.shell{width:min(1100px,calc(100% - 32px));margin:auto}header{height:76px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #e9ebf5}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-weight:900;font-size:21px;letter-spacing:-.6px}.mark{width:41px;height:41px;display:grid;place-items:center;border-radius:14px;background:var(--blue);color:white;font-size:22px;box-shadow:0 8px 22px #5365f536}.nav-note{font-size:13px;color:var(--muted);font-weight:700}
+.hero{text-align:center;padding:70px 0 64px}.eyebrow{display:inline-flex;padding:7px 13px;border:1px solid #dfdfff;background:#f0efff;color:#4e4acb;border-radius:999px;font-size:12px;font-weight:850;letter-spacing:.3px}
+h1{max-width:850px;margin:22px auto 18px;font-size:clamp(40px,7vw,76px);line-height:1.04;letter-spacing:-3.2px;font-weight:900}h1 span{color:var(--blue)}.hero-copy{max-width:640px;margin:0 auto;color:var(--muted);font-size:clamp(16px,2vw,19px)}
+.actions{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:28px}.btn{border:0;border-radius:13px;padding:13px 19px;background:var(--blue);color:#fff;font-weight:800;font-size:14px;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 8px 20px #5365f52b;transition:.16s}.btn:hover{background:var(--dark);transform:translateY(-1px)}.btn:disabled{opacity:.55;cursor:wait;transform:none}.btn.secondary{background:#fff;color:var(--ink);border:1px solid var(--line);box-shadow:none}
+.hero-art{display:flex;justify-content:center;align-items:center;gap:14px;margin:42px auto 0}.art-card{width:175px;padding:17px;background:#fff;border:1px solid var(--line);border-radius:18px;text-align:left;box-shadow:var(--shadow);transform:rotate(-3deg)}.art-card:last-child{transform:rotate(3deg)}.art-icon{font-size:30px;margin-bottom:7px}.art-line{height:7px;border-radius:8px;background:#edf0f7;margin-top:8px}.art-line.short{width:63%}.arrow{font-size:24px;color:var(--blue);font-weight:900}
+section{scroll-margin-top:24px}.intro{text-align:center;max-width:690px;margin:0 auto 26px}.kicker{font-size:12px;color:var(--blue);font-weight:900;letter-spacing:1.1px;text-transform:uppercase}h2{font-size:clamp(27px,4vw,39px);line-height:1.17;letter-spacing:-1.3px;margin:8px 0 10px}.intro p{color:var(--muted);font-size:15px;margin:0}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:70px}.step-card{display:flex;gap:13px;align-items:flex-start;background:#fff;border:1px solid var(--line);border-radius:19px;padding:20px}.step-icon{width:44px;height:44px;flex-shrink:0;display:grid;place-items:center;border-radius:14px;background:var(--soft);font-size:22px}.step-card h3{font-size:15px;margin:0 0 4px}.step-card p{font-size:13px;color:var(--muted);margin:0}
+.workspace{padding:4px 0 80px}.builder{background:#fff;border:1px solid var(--line);border-radius:25px;box-shadow:var(--shadow);overflow:hidden}.builder-head{padding:24px 27px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:16px}.builder-head h2{font-size:23px;margin:0 0 4px}.builder-head p{font-size:14px;color:var(--muted);margin:0}.step-pill{white-space:nowrap;padding:7px 10px;border-radius:9px;background:#eff0ff;color:#464ad6;font-weight:850;font-size:11px}
+.builder-body{padding:26px 27px 29px}.field-label{display:block;font-weight:850;font-size:14px;margin-bottom:10px}.upload-zone{min-height:190px;border:1.5px dashed #c8cfee;border-radius:18px;background:#fafaff;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px;transition:.18s}.upload-zone.drag{background:#f0efff;border-color:var(--blue)}.upload-symbol{width:52px;height:52px;border-radius:17px;background:#efedff;display:grid;place-items:center;font-size:26px;margin-bottom:9px}.upload-zone strong{font-size:15px}.upload-zone p{font-size:13px;color:var(--muted);margin:5px 0 12px}.file-button{border:1px solid #dcdfff;background:#fff;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:800;color:var(--dark)}
+.file-meta{display:none;align-items:center;gap:13px;margin-top:13px;background:#f8f9ff;border:1px solid var(--line);border-radius:14px;padding:11px}.preview{width:54px;height:54px;border-radius:10px;object-fit:cover;background:#eff1f7}.file-info{min-width:0;flex:1}.file-info strong{display:block;font-size:13px;overflow-wrap:anywhere}.file-info span{display:block;font-size:12px;color:var(--muted)}.remove-button{border:0;background:transparent;color:#b44a5b;font-size:13px;font-weight:800;padding:7px}
+.or-divider{display:flex;align-items:center;gap:14px;color:#8a93a8;font-weight:750;font-size:11px;letter-spacing:1px;margin:22px 0}.or-divider:before,.or-divider:after{content:"";height:1px;flex:1;background:var(--line)}textarea{width:100%;min-height:110px;resize:vertical;padding:14px;border:1px solid #dfe4f1;border-radius:14px;background:#fff;color:var(--ink);outline:none;font-size:14px}textarea:focus,button:focus-visible,a:focus-visible{outline:3px solid #aeb5ff;outline-offset:2px}textarea::placeholder{color:#9aa2b4}.tiny-note{font-size:12px;color:var(--muted);margin:7px 0 0}
+.options-title{font-weight:850;font-size:14px;margin:27px 0 12px}.options{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.option-card{display:block;position:relative;border:1.5px solid var(--line);border-radius:17px;padding:17px;cursor:pointer;transition:.18s;background:#fff}.option-card:hover{border-color:#b8bfff;transform:translateY(-1px)}.option-card.selected{border-color:var(--blue);background:#f7f7ff;box-shadow:0 0 0 3px #5365f512}.option-card input{position:absolute;right:16px;top:17px;accent-color:var(--blue);width:17px;height:17px}.option-icon{width:42px;height:42px;display:grid;place-items:center;background:#efedff;border-radius:13px;font-size:22px;margin-bottom:10px}.option-card:nth-child(2) .option-icon{background:#e3f8ed}.option-card h3{margin:0 0 5px;font-size:15px}.option-card p{margin:0;color:var(--muted);font-size:13px;padding-right:15px}
+.generate-row{display:flex;align-items:center;gap:15px;margin-top:24px;flex-wrap:wrap}#generateBtn{min-width:190px}#status{font-size:13px;color:var(--muted);margin:0;flex:1;min-width:160px}.privacy{font-size:12px;color:var(--muted);margin-top:17px}footer{border-top:1px solid var(--line);padding:24px 0;color:var(--muted);font-size:12px}.footer-inner{display:flex;justify-content:space-between;gap:15px;flex-wrap:wrap}
+@media(max-width:780px){.steps{grid-template-columns:1fr;margin-bottom:50px}.step-card{padding:16px}.hero{padding:54px 0}.builder-head,.builder-body{padding-left:20px;padding-right:20px}}
+@media(max-width:560px){.shell{width:calc(100% - 24px)}header{height:66px}.brand{font-size:18px}.mark{width:36px;height:36px}.nav-note{font-size:11px}.hero{padding:48px 0 52px}h1{letter-spacing:-2px}.hero-art{gap:6px;margin-top:34px}.art-card{width:42%;padding:13px}.arrow{font-size:18px}.builder{border-radius:20px}.builder-head{align-items:flex-start}.step-pill{font-size:10px}.options{grid-template-columns:1fr}.option-card{padding:16px}.generate-row #generateBtn{width:100%}.footer-inner{display:block}.footer-inner span{display:block;margin-top:5px}}
+</style>
 </head>
-<body>
-  <div class="shell">
-    <nav aria-label="Main navigation">
-      <div class="brand"><div class="brand-icon" aria-hidden="true">✦</div>Scan2Study</div>
-      <div class="nav-note">YOUR PERSONAL STUDY SPACE ✨</div>
-    </nav>
-
-    <header class="hero">
-      <div class="eyebrow">📚 STUDY SMARTER, NOT LONGER</div>
-      <h1>Your notes, <span>made useful.</span></h1>
-      <p>Turn a photo of your study material into readable text and quick revision notes — all from one simple workspace.</p>
-    </header>
-
-    <main class="workspace">
-      <section class="card" aria-labelledby="upload-title">
-        <div class="card-head"><h2 id="upload-title">Upload your material</h2><span class="step">STEP 01</span></div>
-        <div class="upload-zone" id="dropZone" tabindex="0" role="button" aria-label="Choose a study image">
-          <div class="upload-symbol" aria-hidden="true">☁️</div>
-          <strong>Drop your notes right here</strong>
-          <p>or choose a photo from your device<br>JPG, PNG, WEBP · Up to 10 MB</p>
-          <button class="btn" type="button" id="chooseBtn">Choose an image ↗</button>
-          <input class="sr-only" id="fileInput" type="file" accept="image/png,image/jpeg,image/webp">
-        </div>
-        <div class="file-meta" id="fileMeta">
-          <img class="preview" id="preview" alt="Selected study material preview">
-          <div class="file-info"><strong id="fileName">study-notes.jpg</strong><span id="fileSize">Ready to scan</span></div>
-          <button class="remove" id="removeBtn" type="button">Remove</button>
-        </div>
-        <div class="status" id="status" role="status" aria-live="polite"><div id="statusText">Getting ready…</div><div class="progress"><span id="progressBar"></span></div></div>
-        <div class="actions"><button class="btn" id="scanBtn" type="button" disabled>✨ Extract text</button></div>
-        <div class="privacy"><span>●</span> Your image is processed in your browser and isn't uploaded to our server.</div>
-      </section>
-
-      <section class="card result-card" aria-labelledby="result-title">
-        <div class="card-head"><h2 id="result-title">Your study space</h2><span class="step">STEP 02</span></div>
-        <div class="empty-state" id="emptyState">
-          <div class="empty-art" aria-hidden="true">📝</div>
-          <strong>Your learning workspace awaits</strong>
-          <p>Choose a clear photo of your notes. Your extracted text and revision helpers will appear here.</p>
-        </div>
-        <div class="results" id="results">
-          <div class="tabs" role="tablist" aria-label="Study results">
-            <button class="tab active" role="tab" aria-selected="true" data-tab="textPanel">Extracted text</button>
-            <button class="tab" role="tab" aria-selected="false" data-tab="summaryPanel">Quick summary</button>
-            <button class="tab" role="tab" aria-selected="false" data-tab="quizPanel">Practice</button>
-          </div>
-          <div class="panel active" id="textPanel" role="tabpanel">
-            <h3>Text from your image</h3><div class="text-output" id="extractedText"></div>
-            <div class="result-actions"><button class="btn" id="copyBtn" type="button">Copy text</button><button class="btn secondary" id="downloadBtn" type="button">Download .txt</button></div>
-          </div>
-          <div class="panel" id="summaryPanel" role="tabpanel">
-            <h3>Quick revision notes</h3><p>This is a simple extractive summary made from the first sentences of your text, not an AI-generated explanation.</p><ul id="summaryList"></ul>
-          </div>
-          <div class="panel" id="quizPanel" role="tabpanel">
-            <h3>Check your recall</h3><p>Use these prompts to test yourself on the material you scanned.</p><ol id="questionList"></ol>
-          </div>
-        </div>
-      </section>
-    </main>
-
-    <section class="feature-row" aria-label="Features">
-      <article class="feature"><div class="emoji" aria-hidden="true">🔎</div><div><h3>Read from photos</h3><p>OCR helps turn printed or handwritten content into text. Results depend on image clarity.</p></div></article>
-      <article class="feature"><div class="emoji" aria-hidden="true">🧠</div><div><h3>Revise in less time</h3><p>Make a short list of key sentences and use it as a starting point for revision.</p></div></article>
-      <article class="feature"><div class="emoji" aria-hidden="true">🎯</div><div><h3>Practice active recall</h3><p>Generate simple prompts from your extracted text to help check what you remember.</p></div></article>
-    </section>
-    <footer>Made for curious minds · Scan2Study</footer>
-  </div>
-
-  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
-  <script>
-    const fileInput = document.getElementById('fileInput');
-    const dropZone = document.getElementById('dropZone');
-    const chooseBtn = document.getElementById('chooseBtn');
-    const scanBtn = document.getElementById('scanBtn');
-    const removeBtn = document.getElementById('removeBtn');
-    const fileMeta = document.getElementById('fileMeta');
-    const preview = document.getElementById('preview');
-    const statusBox = document.getElementById('status');
-    const statusText = document.getElementById('statusText');
-    const progressBar = document.getElementById('progressBar');
-    let selectedFile = null;
-    let previewUrl = null;
-    let extracted = '';
-
-    function setStatus(message, progress) {
-      statusBox.style.display = 'block';
-      statusText.textContent = message;
-      progressBar.style.width = Math.max(0, Math.min(100, progress || 0)) + '%';
-    }
-    function clearStatus() { statusBox.style.display = 'none'; progressBar.style.width = '0'; }
-    function selectFile(file) {
-      if (!file) return;
-      if (!['image/jpeg','image/png','image/webp'].includes(file.type)) {
-        setStatus('Please choose a JPG, PNG, or WEBP image.', 0); return;
-      }
-      if (file.size > 10 * 1024 * 1024) {
-        setStatus('This image is over 10 MB. Please choose a smaller file.', 0); return;
-      }
-      selectedFile = file;
-      if (previewUrl) URL.revokeObjectURL(previewUrl);
-      previewUrl = URL.createObjectURL(file);
-      preview.src = previewUrl;
-      document.getElementById('fileName').textContent = file.name;
-      document.getElementById('fileSize').textContent = (file.size / 1024 / 1024).toFixed(2) + ' MB · Ready to scan';
-      fileMeta.style.display = 'flex';
-      dropZone.style.display = 'none';
-      scanBtn.disabled = false;
-      clearStatus();
-    }
-    function resetFile() {
-      selectedFile = null;
-      fileInput.value = '';
-      if (previewUrl) URL.revokeObjectURL(previewUrl);
-      previewUrl = null;
-      preview.removeAttribute('src');
-      fileMeta.style.display = 'none';
-      dropZone.style.display = 'flex';
-      scanBtn.disabled = true;
-      clearStatus();
-    }
-    chooseBtn.addEventListener('click', e => { e.stopPropagation(); fileInput.click(); });
-    dropZone.addEventListener('click', e => { if (e.target !== chooseBtn) fileInput.click(); });
-    dropZone.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fileInput.click(); } });
-    fileInput.addEventListener('change', e => selectFile(e.target.files[0]));
-    removeBtn.addEventListener('click', resetFile);
-    ['dragenter','dragover'].forEach(type => dropZone.addEventListener(type, e => { e.preventDefault(); dropZone.classList.add('drag'); }));
-    ['dragleave','drop'].forEach(type => dropZone.addEventListener(type, e => { e.preventDefault(); dropZone.classList.remove('drag'); }));
-    dropZone.addEventListener('drop', e => selectFile(e.dataTransfer.files[0]));
-
-    async function backendIsAvailable() {
-      try {
-        const response = await fetch('/api/health', {headers: {'Accept': 'application/json'}});
-        if (!response.ok) return false;
-        const data = await response.json();
-        return data.status === 'ok';
-      } catch {
-        return false;
-      }
-    }
-
-    function showStudyResults(text, summaryItems = null, questions = null) {
-      extracted = text;
-      document.getElementById('extractedText').textContent = extracted;
-      if (Array.isArray(summaryItems) && Array.isArray(questions)) {
-        const summaryList = document.getElementById('summaryList');
-        summaryList.replaceChildren();
-        summaryItems.forEach(sentence => {
-          const li = document.createElement('li');
-          li.textContent = sentence;
-          summaryList.appendChild(li);
-        });
-        const questionList = document.getElementById('questionList');
-        questionList.replaceChildren();
-        questions.forEach(prompt => {
-          const li = document.createElement('li');
-          li.textContent = prompt;
-          questionList.appendChild(li);
-        });
-      } else {
-        buildStudyHelpers(extracted);
-      }
-      document.getElementById('emptyState').style.display = 'none';
-      document.getElementById('results').style.display = 'block';
-      document.querySelectorAll('.tab').forEach((tab, i) => {
-        tab.classList.toggle('active', i === 0);
-        tab.setAttribute('aria-selected', i === 0 ? 'true' : 'false');
-      });
-      document.querySelectorAll('.panel').forEach((panel, i) => panel.classList.toggle('active', i === 0));
-    }
-
-    scanBtn.addEventListener('click', async () => {
-      if (!selectedFile) return;
-      scanBtn.disabled = true;
-      try {
-        // When Flask serves this page, use its Python OCR backend.
-        // On GitHub Pages, fall back to browser-based Tesseract.js.
-        if (await backendIsAvailable()) {
-          setStatus('Sending image to Scan2Study backend…', 15);
-          const formData = new FormData();
-          formData.append('image', selectedFile);
-          const response = await fetch('/api/process', {method: 'POST', body: formData});
-          const payload = await response.json().catch(() => ({}));
-          if (!response.ok) {
-            throw new Error(payload.error || 'The backend could not process this image.');
-          }
-          showStudyResults(payload.extracted_text || '', payload.summary || [], payload.questions || []);
-          setStatus('Text extracted by the Python backend!', 100);
-          return;
-        }
-
-        if (!window.Tesseract) {
-          setStatus('OCR library did not load. Check your internet connection and refresh.', 0);
-          return;
-        }
-        setStatus('Loading browser OCR engine…', 3);
-        const result = await Tesseract.recognize(selectedFile, 'eng', {
-          logger: info => {
-            if (info.status) {
-              const pct = info.progress ? Math.round(info.progress * 100) : 5;
-              setStatus(info.status === 'recognizing text' ? 'Reading text… ' + pct + '%' : info.status + '…', pct);
-            }
-          }
-        });
-        const text = (result.data.text || '').trim();
-        if (!text) {
-          setStatus('No text found. Try a brighter, sharper photo with the page fully visible.', 100);
-          return;
-        }
-        showStudyResults(text);
-        setStatus('Text extracted successfully in your browser!', 100);
-      } catch (error) {
-        setStatus(error.message || 'Could not read this image. Try another clear photo.', 0);
-      } finally {
-        scanBtn.disabled = !selectedFile;
-      }
-    });
-
-    function buildStudyHelpers(text) {
-      const sentences = text.replace(/\s+/g, ' ').split(/(?<=[.!?])\s+/).map(s => s.trim()).filter(s => s.length > 25);
-      const summary = sentences.slice(0, 5);
-      const summaryList = document.getElementById('summaryList');
-      summaryList.replaceChildren();
-      (summary.length ? summary : [text.slice(0, 500)]).forEach(sentence => {
-        const li = document.createElement('li'); li.textContent = sentence; summaryList.appendChild(li);
-      });
-      const questionList = document.getElementById('questionList');
-      questionList.replaceChildren();
-      const prompts = sentences.slice(0, 5).map(s => 'Can you explain this in your own words: ' + s);
-      (prompts.length ? prompts : ['What are the main ideas in these notes?']).forEach(prompt => {
-        const li = document.createElement('li'); li.textContent = prompt; questionList.appendChild(li);
-      });
-    }
-    document.querySelectorAll('.tab').forEach(tab => tab.addEventListener('click', () => {
-      document.querySelectorAll('.tab').forEach(t => {
-        const active = t === tab; t.classList.toggle('active', active); t.setAttribute('aria-selected', active ? 'true' : 'false');
-      });
-      document.querySelectorAll('.panel').forEach(panel => panel.classList.toggle('active', panel.id === tab.dataset.tab));
-    }));
-    document.getElementById('copyBtn').addEventListener('click', async () => {
-      try {
-        await navigator.clipboard.writeText(extracted);
-        document.getElementById('copyBtn').textContent = 'Copied ✓';
-      } catch { setStatus('Clipboard access is unavailable in this browser. Select the text and copy it manually.', 100); }
-    });
-    document.getElementById('downloadBtn').addEventListener('click', () => {
-      const blob = new Blob([extracted], {type:'text/plain;charset=utf-8'});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a'); a.href = url; a.download = 'scan2study-notes.txt'; a.click();
-      URL.revokeObjectURL(url);
-    });
-  </script>
-</body>
-</html>
+<body><div class="shell">
+<header><a class="brand" href="./" aria-label="Scan2Study home"><span class="mark">✦</span><span>Scan2Study</span></a><span class="nav-note">Learn at your own pace ✨</span></header>
+<main>
+<section class="hero" aria-labelledby="welcome-title">
+<span class="eyebrow">📚 YOUR FRIENDLY STUDY SPACE</span>
+<h1 id="welcome-title">Welcome!<br>Make your studying <span>easier with me.</span></h1>
+<p class="hero-copy">Got a confusing textbook page? Bring it here. We’ll turn your study material into simpler words, so it feels easier to learn one idea at a time.</p>
+<div class="actions"><a class="btn" href="#workspace">Let’s make it easier <span aria-hidden="true">↓</span></a><a class="btn secondary" href="#how-it-works">How it works</a></div>
+<div class="hero-art" aria-hidden="true"><div class="art-card"><div class="art-icon">📖</div><div class="art-line"></div><div class="art-line"></div><div class="art-line short"></div></div><div class="arrow">→</div><div class="art-card"><div class="art-icon">💡</div><div class="art-line"></div><div class="art-line short"></div><div class="art-line"></div></div></div>
+</section>
+<section id="how-it-works" aria-labelledby="how-title"><div class="intro"><span class="kicker">THREE LITTLE STEPS</span><h2 id="how-title">From textbook to “I get it!”</h2><p>Start with a clear photo or paste the text you want to understand.</p></div>
+<div class="steps"><article class="step-card"><div class="step-icon">📷</div><div><h3>1. Add your study material</h3><p>Upload a textbook picture, or paste a passage into the text box.</p></div></article><article class="step-card"><div class="step-icon">🧠</div><div><h3>2. Choose your study style</h3><p>Ask for easy meaning or a quick study shortcut.</p></div></article><article class="step-card"><div class="step-icon">✨</div><div><h3>3. Compare and learn</h3><p>See your original text beside a simpler version on a fresh page.</p></div></article></div></section>
+<section id="workspace" class="workspace" aria-labelledby="workspace-title"><div class="intro"><span class="kicker">YOUR STUDY WORKSPACE</span><h2 id="workspace-title">What are we learning today?</h2><p>Start with an image or text. Then choose what kind of help you need.</p></div>
+<div class="builder"><div class="builder-head"><div><h2>Add your textbook material</h2><p>Use a clear photo so the words are easier to read.</p></div><span class="step-pill">STEP 1 OF 2</span></div>
+<div class="builder-body"><label class="field-label" for="fileInput">Textbook image</label><input id="fileInput" type="file" accept="image/jpeg,image/png,image/webp" hidden>
+<div id="dropZone" class="upload-zone" role="button" tabindex="0" aria-label="Choose or drop a textbook image"><div class="upload-symbol">📄</div><strong>Drop your textbook image here</strong><p>JPG, PNG, or WEBP · up to 10 MB</p><button id="chooseBtn" class="file-button" type="button">Choose image</button></div>
+<div id="fileMeta" class="file-meta"><img id="preview" class="preview" alt="Preview of selected textbook image"><div class="file-info"><strong id="fileName"></strong><span id="fileSize"></span></div><button id="removeBtn" class="remove-button" type="button">Remove</button></div>
+<div class="or-divider">OR PASTE TEXT</div><label class="field-label" for="textInput">Text you want to understand</label><textarea id="textInput" placeholder="Paste a paragraph from your textbook here…"></textarea><p class="tiny-note">Use an image or pasted text. If both are provided, the image will be processed first.</p>
+<div class="options-title">What do you want me to do?</div><div class="options" role="radiogroup" aria-label="Choose a study mode">
+<label class="option-card selected" id="easyOption"><input type="radio" name="mode" value="meaning" checked><div class="option-icon">💬</div><h3>Text meaning</h3><p>Turn difficult wording into easier words while keeping the original idea beside it.</p></label>
+<label class="option-card" id="shortcutOption"><input type="radio" name="mode" value="shortcut"><div class="option-icon">⚡</div><h3>Quick study shortcut</h3><p>Get an easier version plus a small study tip to help you revise the idea.</p></label>
+</div>
+<div class="generate-row"><button id="generateBtn" class="btn" type="button">Generate easy text <span aria-hidden="true">→</span></button><p id="status" role="status" aria-live="polite">Add an image or paste text to get started.</p></div>
+<p class="privacy">Prototype note: GitHub Pages uses browser-based text recognition. The easy version currently uses simple word substitutions, not an AI model. Check it against your textbook.</p>
+</div></div></section>
+</main><footer><div class="footer-inner"><span><strong>✦ Scan2Study</strong> · Small steps, clearer learning.</span><span>Made for curious minds 📚</span></div></footer>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+<script>
+const fileInput=document.getElementById('fileInput'),dropZone=document.getElementById('dropZone'),chooseBtn=document.getElementById('chooseBtn'),generateBtn=document.getElementById('generateBtn'),textInput=document.getElementById('textInput'),statusText=document.getElementById('status'),fileMeta=document.getElementById('fileMeta'),preview=document.getElementById('preview');
+let selectedFile=null,previewUrl=null;
+function setStatus(message){statusText.textContent=message}
+function selectFile(file){if(!file)return;if(!['image/jpeg','image/png','image/webp'].includes(file.type)){setStatus('Please choose a JPG, PNG, or WEBP image.');return}if(file.size>10*1024*1024){setStatus('This image is over 10 MB. Please choose a smaller file.');return}selectedFile=file;if(previewUrl)URL.revokeObjectURL(previewUrl);previewUrl=URL.createObjectURL(file);preview.src=previewUrl;document.getElementById('fileName').textContent=file.name;document.getElementById('fileSize').textContent=(file.size/1024/1024).toFixed(2)+' MB · Ready to read';fileMeta.style.display='flex';dropZone.style.display='none';setStatus('Image ready. Choose a study style, then generate.')}
+function resetFile(){selectedFile=null;fileInput.value='';if(previewUrl)URL.revokeObjectURL(previewUrl);previewUrl=null;preview.removeAttribute('src');fileMeta.style.display='none';dropZone.style.display='flex';setStatus(textInput.value.trim()?'Text is ready. Choose a study style, then generate.':'Add an image or paste text to get started.')}
+chooseBtn.addEventListener('click',function(event){event.stopPropagation();fileInput.click()});
+dropZone.addEventListener('click',function(event){if(event.target!==chooseBtn)fileInput.click()});
+dropZone.addEventListener('keydown',function(event){if(event.key==='Enter'||event.key===' '){event.preventDefault();fileInput.click()}});
+fileInput.addEventListener('change',function(event){selectFile(event.target.files[0])});document.getElementById('removeBtn').addEventListener('click',resetFile);
+['dragenter','dragover'].forEach(function(type){dropZone.addEventListener(type,function(event){event.preventDefault();dropZone.classList.add('drag')})});
+['dragleave','drop'].forEach(function(type){dropZone.addEventListener(type,function(event){event.preventDefault();dropZone.classList.remove('drag')})});
+dropZone.addEventListener('drop',function(event){if(event.dataTransfer.files&&event.dataTransfer.files.length)selectFile(event.dataTransfer.files[0])});
+document.querySelectorAll('input[name="mode"]').forEach(function(input){input.addEventListener('change',function(){document.getElementById('easyOption').classList.toggle('selected',input.value==='meaning'&&input.checked);document.getElementById('shortcutOption').classList.toggle('selected',input.value==='shortcut'&&input.checked)})});
+function browserSimplify(text){
+const replacements=[['due to the fact that','because'],['as a consequence of','because of'],['at this point in time','now'],['for the purpose of','to'],['in the event that','if'],['subsequent to','after'],['prior to','before'],['in addition to','also'],['make use of','use'],['is characterized by','has'],['is defined as','means'],['consists of','is made of'],['approximately','about'],['demonstrates','shows'],['demonstrate','show'],['illustrates','shows'],['facilitate','help'],['utilization','use'],['utilize','use'],['commence','start'],['terminate','end'],['sufficient','enough'],['obtain','get'],['assist','help'],['indicate','show'],['occur','happen'],['essential','important'],['numerous','many'],['individuals','people'],['predominantly','mostly'],['substantial','large'],['fundamental','basic'],['methodology','method'],['synthesize','combine'],['therefore','so'],['however','but'],['consequently','as a result'],['require','need']];
+let result=text;replacements.forEach(function(pair){const phrase=pair[0].split(' ').join('\\\\s+');const pattern=new RegExp('(?<!\\\\w)'+phrase+'(?!\\\\w)','gi');result=result.replace(pattern,function(match){return match.charAt(0)===match.charAt(0).toUpperCase()?pair[1].charAt(0).toUpperCase()+pair[1].slice(1):pair[1]})});return result
+}
+async function backendIsAvailable(){try{const response=await fetch('/api/health',{headers:{'Accept':'application/json'}});if(!response.ok)return false;const data=await response.json();return data.status==='ok'}catch(error){return false}}
+function openResults(original,easy,mode,source){try{sessionStorage.setItem('scan2studyResult',JSON.stringify({original:original,easy:easy||browserSimplify(original),mode:mode,source:source,createdAt:new Date().toISOString()}));window.location.href='result.html'}catch(error){setStatus('Your browser blocked temporary storage. Please allow site storage and try again.');generateBtn.disabled=false;generateBtn.innerHTML='Generate easy text <span aria-hidden="true">→</span>'}}
+generateBtn.addEventListener('click',async function(){const pastedText=textInput.value.trim();if(!selectedFile&&!pastedText){setStatus('Add a textbook image or paste some text first.');return}const mode=document.querySelector('input[name="mode"]:checked').value;generateBtn.disabled=true;generateBtn.textContent='Preparing your study page…';try{let original='',easy='',source='text';if(selectedFile&&await backendIsAvailable()){setStatus('Reading your image with the Scan2Study backend…');const formData=new FormData();formData.append('image',selectedFile);const response=await fetch('/api/process',{method:'POST',body:formData});const payload=await response.json().catch(function(){return {}});if(!response.ok)throw new Error(payload.error||'The backend could not read that image.');original=payload.extracted_text||'';easy=payload.easy_text||browserSimplify(original);source='image'}else if(selectedFile){if(!window.Tesseract)throw new Error('The image reader did not load. Check your internet connection and try again.');setStatus('Reading the textbook image… this can take a little while.');const result=await Tesseract.recognize(selectedFile,'eng',{logger:function(info){if(info.status==='recognizing text'&&info.progress)setStatus('Reading text… '+Math.round(info.progress*100)+'%')}});original=(result.data.text||'').trim();source='image';if(!original)throw new Error('No text found. Try a sharper photo with better lighting.');easy=browserSimplify(original)}else{original=pastedText;easy=browserSimplify(original);source='text'}if(!original.trim())throw new Error('No text was found. Please try a clearer image or paste the text.');openResults(original,easy,mode,source)}catch(error){setStatus(error.message||'Something went wrong. Please try again.');generateBtn.disabled=false;generateBtn.innerHTML='Generate easy text <span aria-hidden="true">→</span>'}});
+textInput.addEventListener('input',function(){if(!selectedFile&&textInput.value.trim())setStatus('Text is ready. Choose a study style, then generate.');else if(!selectedFile)setStatus('Add an image or paste text to get started.')});
+</script></body></html>
