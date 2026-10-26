@@ -202,14 +202,72 @@
     ['dragleave','drop'].forEach(type => dropZone.addEventListener(type, e => { e.preventDefault(); dropZone.classList.remove('drag'); }));
     dropZone.addEventListener('drop', e => selectFile(e.dataTransfer.files[0]));
 
+    async function backendIsAvailable() {
+      try {
+        const response = await fetch('/api/health', {headers: {'Accept': 'application/json'}});
+        if (!response.ok) return false;
+        const data = await response.json();
+        return data.status === 'ok';
+      } catch {
+        return false;
+      }
+    }
+
+    function showStudyResults(text, summaryItems = null, questions = null) {
+      extracted = text;
+      document.getElementById('extractedText').textContent = extracted;
+      if (Array.isArray(summaryItems) && Array.isArray(questions)) {
+        const summaryList = document.getElementById('summaryList');
+        summaryList.replaceChildren();
+        summaryItems.forEach(sentence => {
+          const li = document.createElement('li');
+          li.textContent = sentence;
+          summaryList.appendChild(li);
+        });
+        const questionList = document.getElementById('questionList');
+        questionList.replaceChildren();
+        questions.forEach(prompt => {
+          const li = document.createElement('li');
+          li.textContent = prompt;
+          questionList.appendChild(li);
+        });
+      } else {
+        buildStudyHelpers(extracted);
+      }
+      document.getElementById('emptyState').style.display = 'none';
+      document.getElementById('results').style.display = 'block';
+      document.querySelectorAll('.tab').forEach((tab, i) => {
+        tab.classList.toggle('active', i === 0);
+        tab.setAttribute('aria-selected', i === 0 ? 'true' : 'false');
+      });
+      document.querySelectorAll('.panel').forEach((panel, i) => panel.classList.toggle('active', i === 0));
+    }
+
     scanBtn.addEventListener('click', async () => {
       if (!selectedFile) return;
-      if (!window.Tesseract) {
-        setStatus('OCR library did not load. Check your internet connection and refresh.', 0); return;
-      }
       scanBtn.disabled = true;
-      setStatus('Loading OCR engine…', 3);
       try {
+        // When Flask serves this page, use its Python OCR backend.
+        // On GitHub Pages, fall back to browser-based Tesseract.js.
+        if (await backendIsAvailable()) {
+          setStatus('Sending image to Scan2Study backend…', 15);
+          const formData = new FormData();
+          formData.append('image', selectedFile);
+          const response = await fetch('/api/process', {method: 'POST', body: formData});
+          const payload = await response.json().catch(() => ({}));
+          if (!response.ok) {
+            throw new Error(payload.error || 'The backend could not process this image.');
+          }
+          showStudyResults(payload.extracted_text || '', payload.summary || [], payload.questions || []);
+          setStatus('Text extracted by the Python backend!', 100);
+          return;
+        }
+
+        if (!window.Tesseract) {
+          setStatus('OCR library did not load. Check your internet connection and refresh.', 0);
+          return;
+        }
+        setStatus('Loading browser OCR engine…', 3);
         const result = await Tesseract.recognize(selectedFile, 'eng', {
           logger: info => {
             if (info.status) {
@@ -218,23 +276,15 @@
             }
           }
         });
-        extracted = (result.data.text || '').trim();
-        if (!extracted) {
+        const text = (result.data.text || '').trim();
+        if (!text) {
           setStatus('No text found. Try a brighter, sharper photo with the page fully visible.', 100);
-          scanBtn.disabled = false; return;
+          return;
         }
-        document.getElementById('extractedText').textContent = extracted;
-        buildStudyHelpers(extracted);
-        document.getElementById('emptyState').style.display = 'none';
-        document.getElementById('results').style.display = 'block';
-        setStatus('Text extracted successfully!', 100);
-        document.querySelectorAll('.tab').forEach((tab, i) => {
-          tab.classList.toggle('active', i === 0);
-          tab.setAttribute('aria-selected', i === 0 ? 'true' : 'false');
-        });
-        document.querySelectorAll('.panel').forEach((panel, i) => panel.classList.toggle('active', i === 0));
+        showStudyResults(text);
+        setStatus('Text extracted successfully in your browser!', 100);
       } catch (error) {
-        setStatus('Could not read this image. Try another clear photo or check your connection.', 0);
+        setStatus(error.message || 'Could not read this image. Try another clear photo.', 0);
       } finally {
         scanBtn.disabled = !selectedFile;
       }
