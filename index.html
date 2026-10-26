@@ -20,8 +20,10 @@ section{scroll-margin-top:24px}.intro{text-align:center;max-width:690px;margin:0
 .or-divider{display:flex;align-items:center;gap:14px;color:#8a93a8;font-weight:750;font-size:11px;letter-spacing:1px;margin:22px 0}.or-divider:before,.or-divider:after{content:"";height:1px;flex:1;background:var(--line)}textarea{width:100%;min-height:110px;resize:vertical;padding:14px;border:1px solid #dfe4f1;border-radius:14px;background:#fff;color:var(--ink);outline:none;font-size:14px}textarea:focus,button:focus-visible,a:focus-visible{outline:3px solid #aeb5ff;outline-offset:2px}textarea::placeholder{color:#9aa2b4}.tiny-note{font-size:12px;color:var(--muted);margin:7px 0 0}
 .options-title{font-weight:850;font-size:14px;margin:27px 0 12px}.options{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.option-card{display:block;position:relative;border:1.5px solid var(--line);border-radius:17px;padding:17px;cursor:pointer;transition:.18s;background:#fff}.option-card:hover{border-color:#b8bfff;transform:translateY(-1px)}.option-card.selected{border-color:var(--blue);background:#f7f7ff;box-shadow:0 0 0 3px #5365f512}.option-card input{position:absolute;right:16px;top:17px;accent-color:var(--blue);width:17px;height:17px}.option-icon{width:42px;height:42px;display:grid;place-items:center;background:#efedff;border-radius:13px;font-size:22px;margin-bottom:10px}.option-card:nth-child(2) .option-icon{background:#e3f8ed}.option-card h3{margin:0 0 5px;font-size:15px}.option-card p{margin:0;color:var(--muted);font-size:13px;padding-right:15px}
 .generate-row{display:flex;align-items:center;gap:15px;margin-top:24px;flex-wrap:wrap}#generateBtn{min-width:190px}#status{font-size:13px;color:var(--muted);margin:0;flex:1;min-width:160px}.privacy{font-size:12px;color:var(--muted);margin-top:17px}footer{border-top:1px solid var(--line);padding:24px 0;color:var(--muted);font-size:12px}.footer-inner{display:flex;justify-content:space-between;gap:15px;flex-wrap:wrap}
-@media(max-width:780px){.steps{grid-template-columns:1fr;margin-bottom:50px}.step-card{padding:16px}.hero{padding:54px 0}.builder-head,.builder-body{padding-left:20px;padding-right:20px}}
-@media(max-width:560px){.shell{width:calc(100% - 24px)}header{height:66px}.brand{font-size:18px}.mark{width:36px;height:36px}.nav-note{font-size:11px}.hero{padding:48px 0 52px}h1{letter-spacing:-2px}.hero-art{gap:6px;margin-top:34px}.art-card{width:42%;padding:13px}.arrow{font-size:18px}.builder{border-radius:20px}.builder-head{align-items:flex-start}.step-pill{font-size:10px}.options{grid-template-columns:1fr}.option-card{padding:16px}.generate-row #generateBtn{width:100%}.footer-inner{display:block}.footer-inner span{display:block;margin-top:5px}}
+@media(max-width:780px){.steps{grid-template-columns:1fr;margin-bottom:50px}.step-card{padding:16px}.hero{padding:54px 0}.builder-head,.builder-body{padding-left:20px;padding-right:20px}.ask-wrap{grid-template-columns:1fr;padding:22px}.ask-benefits{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.ask-wrap{padding:17px;border-radius:20px}.ask-benefits{grid-template-columns:1fr}.chat-log{height:270px}.shell{width:calc(100% - 24px)}header{height:66px}.brand{font-size:18px}.mark{width:36px;height:36px}.nav-note{font-size:11px}.hero{padding:48px 0 52px}h1{letter-spacing:-2px}.hero-art{gap:6px;margin-top:34px}.art-card{width:42%;padding:13px}.arrow{font-size:18px}.builder{border-radius:20px}.builder-head{align-items:flex-start}.step-pill{font-size:10px}.options{grid-template-columns:1fr}.option-card{padding:16px}.generate-row #generateBtn{width:100%}.footer-inner{display:block}.footer-inner span{display:block;margin-top:5px}}
+
+.ask-section{padding:8px 0 76px}.ask-wrap{display:grid;grid-template-columns:1fr 1.05fr;gap:28px;align-items:center;padding:28px;background:linear-gradient(125deg,#f0efff,#f6fbff 55%,#eafaf3);border:1px solid #e4e7fa;border-radius:26px}.ask-copy h2{font-size:clamp(28px,4vw,38px);margin:8px 0 12px}.ask-copy>p{font-size:15px;color:var(--muted);max-width:450px}.ask-benefits{display:grid;grid-template-columns:1fr 1fr;gap:10px 14px;margin-top:20px;font-size:13px;color:#3f4b69}.ask-benefits span:before{content:'✓';color:#3b9b72;font-weight:900;margin-right:8px}.chat-card{background:#fff;border:1px solid var(--line);border-radius:20px;overflow:hidden;box-shadow:var(--shadow);min-width:0}.chat-head{display:flex;align-items:center;gap:11px;padding:16px 17px;border-bottom:1px solid var(--line)}.chat-avatar{width:39px;height:39px;display:grid;place-items:center;background:#efedff;border-radius:14px;font-size:21px}.chat-head strong{display:block;font-size:14px}.chat-head small{display:block;font-size:11px;color:var(--muted)}.chat-log{height:290px;overflow-y:auto;padding:15px;display:flex;flex-direction:column;gap:11px;background:#fcfcff}.chat-bubble{max-width:92%;padding:11px 13px;border-radius:14px;font-size:13px;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.65}.chat-bubble.assistant{align-self:flex-start;background:#f0f1fb;border:1px solid #e7e9f8;color:var(--ink);border-top-left-radius:5px}.chat-bubble.user{align-self:flex-end;background:var(--blue);color:#fff;border-top-right-radius:5px}.chat-bubble.error{background:#fff6e7;border-color:#f5e2b4;color:#77551b}.chat-prompts{display:flex;flex-wrap:wrap;gap:7px;padding:12px 13px 2px}.prompt-chip{border:1px solid #dfe3f6;border-radius:999px;background:#fff;color:#4b53c6;padding:7px 10px;font-size:11px;font-weight:750}.prompt-chip:hover{background:#f5f4ff;border-color:#bfc4ff}.chat-form{display:flex;gap:8px;padding:12px 13px 14px}.chat-input{min-width:0;flex:1;border:1px solid #dce1f0;border-radius:12px;padding:11px 12px;font-size:13px;outline:none}.chat-input:focus{border-color:var(--blue);box-shadow:0 0 0 3px #5365f514}.chat-send{width:43px;flex-shrink:0;border:0;border-radius:12px;background:var(--blue);color:#fff;font-size:18px;font-weight:900}.chat-send:disabled{opacity:.5;cursor:wait}.chat-note{margin:0;padding:0 14px 13px;color:var(--muted);font-size:10px}
 </style>
 </head>
 <body><div class="shell">
@@ -49,6 +51,33 @@ section{scroll-margin-top:24px}.intro{text-align:center;max-width:690px;margin:0
 <div class="generate-row"><button id="generateBtn" class="btn" type="button">Generate easy text <span aria-hidden="true">→</span></button><p id="status" role="status" aria-live="polite">Add an image or paste text to get started.</p></div>
 <p class="privacy">AI-powered explanations work when the Flask backend is connected and configured. Otherwise, Scan2Study uses basic word substitutions. When AI is enabled, your study text is sent to the configured AI provider. Do not submit private or sensitive information.</p>
 </div></div></section>
+
+<section id="ask-scan2study" class="ask-section" aria-labelledby="ask-title">
+ <div class="ask-wrap">
+  <div class="ask-copy">
+   <span class="kicker">YOUR AI STUDY COMPANION</span>
+   <h2 id="ask-title">Ask Scan2Study ✨</h2>
+   <p>Got a question? Ask about school topics, textbook notes, examples, or anything you want to understand better. Ask follow-up questions, too.</p>
+   <div class="ask-benefits"><span>Clear, simple explanations</span><span>Step-by-step help</span><span>Examples and study tips</span><span>Follow-up questions</span></div>
+  </div>
+  <div class="chat-card" aria-label="Ask Scan2Study chat">
+   <div class="chat-head"><div class="chat-avatar" aria-hidden="true">🤖</div><div><strong>Ask Scan2Study</strong><small>Friendly AI study helper</small></div></div>
+   <div id="chatLog" class="chat-log" role="log" aria-live="polite" aria-relevant="additions text"><div class="chat-bubble assistant">Hi! I’m Scan2Study. 👋 Ask me about a school topic, request an example, or ask me to explain something in simple words.</div></div>
+   <div class="chat-prompts" aria-label="Suggested questions">
+    <button class="prompt-chip" type="button" data-prompt="Explain photosynthesis in simple words.">Explain simply</button>
+    <button class="prompt-chip" type="button" data-prompt="Give me a quick summary of the water cycle.">Quick summary</button>
+    <button class="prompt-chip" type="button" data-prompt="Quiz me on fractions and explain any mistakes.">Quiz me</button>
+    <button class="prompt-chip" type="button" data-prompt="Explain this step by step: ">Step by step</button>
+   </div>
+   <form id="chatForm" class="chat-form">
+    <label for="chatInput" style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0">Ask Scan2Study a question</label>
+    <input id="chatInput" class="chat-input" type="text" maxlength="3000" autocomplete="off" placeholder="Type your question here…" required>
+    <button id="chatSend" class="chat-send" type="submit" aria-label="Send question">➤</button>
+   </form>
+   <p class="chat-note">AI answers can be wrong. Check important school facts with your textbook. Don’t share private information.</p>
+  </div>
+ </div>
+</section>
 </main><footer><div class="footer-inner"><span><strong>✦ Scan2Study</strong> · Small steps, clearer learning.</span><span>Made for curious minds 📚</span></div></footer>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
@@ -121,4 +150,51 @@ generateBtn.addEventListener('click',async function(){
  }catch(error){setStatus(error.message||'Something went wrong. Please try again.');generateBtn.disabled=false;generateBtn.innerHTML='Generate easy text <span aria-hidden="true">→</span>'}
 });
 textInput.addEventListener('input',function(){if(!selectedFile&&textInput.value.trim())setStatus('Text is ready. Choose a study style, then generate.');else if(!selectedFile)setStatus('Add an image or paste text to get started.')});
+
+const chatForm=document.getElementById('chatForm');
+const chatInput=document.getElementById('chatInput');
+const chatSend=document.getElementById('chatSend');
+const chatLog=document.getElementById('chatLog');
+let chatHistory=[];
+function addChatBubble(text,kind){
+ const bubble=document.createElement('div');
+ bubble.className='chat-bubble '+kind;
+ bubble.textContent=text;
+ chatLog.appendChild(bubble);
+ chatLog.scrollTop=chatLog.scrollHeight;
+ return bubble;
+}
+async function sendChatQuestion(question){
+ const cleanQuestion=(question||'').trim();
+ if(!cleanQuestion||chatSend.disabled)return;
+ chatInput.value='';
+ chatSend.disabled=true;
+ addChatBubble(cleanQuestion,'user');
+ const pending=addChatBubble('Thinking through your question…','assistant');
+ const nextHistory=chatHistory.concat([{role:'user',content:cleanQuestion}]);
+ try{
+  const response=await fetch(apiUrl('/api/chat'),{
+   method:'POST',
+   headers:{'Content-Type':'application/json','Accept':'application/json'},
+   body:JSON.stringify({messages:nextHistory.slice(-10)})
+  });
+  const payload=await response.json().catch(function(){return {}});
+  if(!response.ok)throw new Error(payload.error||'The AI service is not available yet.');
+  if(!payload.answer)throw new Error('I couldn’t get an answer this time. Please try again.');
+  pending.remove();
+  addChatBubble(payload.answer,'assistant');
+  chatHistory=nextHistory.concat([{role:'assistant',content:payload.answer}]).slice(-8);
+ }catch(error){
+  pending.remove();
+  addChatBubble((error.message||'I couldn’t reach the AI service.')+' If this is the GitHub Pages demo, the Flask backend needs to be deployed and configured in config.js first.','assistant error');
+ }finally{
+  chatSend.disabled=false;
+  chatInput.focus();
+ }
+}
+chatForm.addEventListener('submit',function(event){event.preventDefault();sendChatQuestion(chatInput.value)});
+document.querySelectorAll('[data-prompt]').forEach(function(button){
+ button.addEventListener('click',function(){chatInput.value=button.getAttribute('data-prompt')||'';chatInput.focus();if(chatInput.value.endsWith(': '))return;sendChatQuestion(chatInput.value)});
+});
+
 </script></body></html>
