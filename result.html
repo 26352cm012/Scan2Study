@@ -17,27 +17,41 @@ header{height:76px;display:flex;align-items:center;justify-content:space-between
 <header><a class="brand" href="index.html"><span class="mark">✦</span><span>Scan2Study</span></a><a class="top-link" href="index.html#workspace">Start another page ↗</a></header>
 <main>
 <section class="hero"><a class="back" href="index.html#workspace">← Back to your study workspace</a><br><span class="eyebrow">YOUR STUDY PAGE</span><h1>Let’s make this easier. 💡</h1><p>Compare your original material with a simpler version. Keep the original nearby so you can double-check important details.</p></section>
-<div id="missingNotice" class="notice">There isn’t a study result open in this tab yet. Go back to the workspace and add an image or text first.</div>
+<div id="missingNotice" class="notice">There isn’t a study result open in this tab yet. Go back to the workspace and add an image or text first.</div><div id="resultNotice" class="notice" role="status" aria-live="polite"></div>
 <section class="compare" aria-label="Original and easier text comparison">
 <article class="panel"><div class="panel-head"><div><h2 class="panel-title">What you entered</h2><p class="panel-sub" id="originalSubtitle">Original text from your study material</p></div><span class="pill">ORIGINAL</span></div><div class="content" id="originalContent"></div><div class="panel-actions"><button class="btn secondary" id="copyOriginal" type="button">Copy original</button></div></article>
-<article class="panel"><div class="panel-head"><div><h2 class="panel-title">Easy-to-understand text</h2><p class="panel-sub">Selected wording changed to simpler words</p></div><span class="pill easy">EASIER VERSION</span></div><div class="content" id="easyContent"></div><div class="panel-actions"><button class="btn" id="copyEasy" type="button">Copy easy text</button><button class="btn secondary" id="downloadBtn" type="button">Download both</button></div></article>
+<article class="panel"><div class="panel-head"><div><h2 class="panel-title">Easy-to-understand text</h2><p class="panel-sub" id="easySubtitle">An easier explanation of your material</p></div><span class="pill easy" id="engineBadge">EASIER VERSION</span></div><div class="content" id="easyContent"></div><div class="panel-actions"><button class="btn" id="copyEasy" type="button">Copy easy text</button><button class="btn secondary" id="downloadBtn" type="button">Download both</button></div></article>
 </section>
-<section class="tip" id="shortcutTip"><div class="tip-icon">⚡</div><div><h2>Your quick study shortcut</h2><p>Read one idea at a time, cover the original, and explain the idea in your own words. Then check the original for exact definitions, dates, formulas, and other details.</p></div></section>
-<section class="tip"><div class="tip-icon">📝</div><div><h2>A small note about this prototype</h2><p>The easy version currently uses a small set of simple-word substitutions. It is not a full AI explanation, so it may not simplify every sentence or preserve every nuance. Always compare it with the original textbook before using it for homework or exams.</p></div></section>
+<section class="tip" id="shortcutTip"><div class="tip-icon">⚡</div><div><h2>Your quick study shortcut</h2><p id="studyTipText">Read one idea at a time, cover the original, and explain the idea in your own words. Then check the original for exact definitions, dates, formulas, and other details.</p></div></section>
+<section class="tip" id="qualityTip"><div class="tip-icon">📝</div><div><h2 id="qualityTitle">Check your study notes</h2><p id="qualityText">Always compare the easier version with your original textbook, especially for exact definitions, dates, formulas, and exam details.</p></div></section>
 </main><footer><div class="footer-inner"><span><strong>✦ Scan2Study</strong> · Small steps, clearer learning.</span><span>Keep learning at your own pace 📚</span></div></footer>
 </div>
 <script>
 let packet=null;
 try{packet=JSON.parse(sessionStorage.getItem('scan2studyResult')||'null')}catch(error){packet=null}
 const originalContent=document.getElementById('originalContent'),easyContent=document.getElementById('easyContent');
-if(!packet||!packet.original){document.getElementById('missingNotice').style.display='block';originalContent.textContent='No study text yet.';easyContent.textContent='Add material on the previous page to create your comparison.';originalContent.classList.add('empty');easyContent.classList.add('empty');document.getElementById('shortcutTip').style.display='none'}
+if(!packet||!packet.original){document.getElementById('missingNotice').style.display='block';originalContent.textContent='No study text yet.';easyContent.textContent='Add material on the previous page to create your comparison.';originalContent.classList.add('empty');easyContent.classList.add('empty');document.getElementById('shortcutTip').style.display='none';document.getElementById('qualityTip').style.display='none'}
 else{
 originalContent.textContent=packet.original;easyContent.textContent=packet.easy||packet.original;
 document.getElementById('originalSubtitle').textContent=packet.source==='image'?'Text read from your textbook image':'Text you pasted into the workspace';
+const resultNotice=document.getElementById('resultNotice');
+if(packet.notice){resultNotice.textContent=packet.notice;resultNotice.style.display='block';}
+if(packet.engine==='ai'){
+ document.getElementById('engineBadge').textContent='AI EXPLANATION';
+ document.getElementById('easySubtitle').textContent='Generated by the configured AI model';
+ document.getElementById('qualityTitle').textContent='AI explanation — double-check key details';
+ document.getElementById('qualityText').textContent='AI can make mistakes. Compare names, dates, definitions, equations, and important details with your original textbook.';
+}else{
+ document.getElementById('engineBadge').textContent='BASIC WORDING';
+ document.getElementById('easySubtitle').textContent='Uses a small set of word substitutions, not AI';
+ document.getElementById('qualityTitle').textContent='This is a basic fallback, not AI';
+ document.getElementById('qualityText').textContent='Word substitutions may not explain difficult ideas or preserve every nuance. Check the result against the original textbook.';
+}
 if(packet.mode!=='shortcut')document.getElementById('shortcutTip').style.display='none';
+if(packet.mode==='shortcut'&&packet.studyTip)document.getElementById('studyTipText').textContent=packet.studyTip;
 }
 async function copyText(text,button){try{await navigator.clipboard.writeText(text);const old=button.textContent;button.textContent='Copied ✓';setTimeout(function(){button.textContent=old},1500)}catch(error){const area=document.createElement('textarea');area.value=text;document.body.appendChild(area);area.select();const copied=document.execCommand('copy');area.remove();button.textContent=copied?'Copied ✓':'Copy unavailable';setTimeout(function(){button.textContent=button.id==='copyEasy'?'Copy easy text':'Copy original'},1500)}}
 document.getElementById('copyOriginal').addEventListener('click',function(){if(packet)copyText(packet.original,this)});
 document.getElementById('copyEasy').addEventListener('click',function(){if(packet)copyText(packet.easy||packet.original,this)});
-document.getElementById('downloadBtn').addEventListener('click',function(){if(!packet)return;const full='SCAN2STUDY — STUDY NOTES\n\nWHAT YOU ENTERED\n'+packet.original+'\n\nEASY-TO-UNDERSTAND VERSION\n'+(packet.easy||packet.original)+'\n\nNote: Prototype word substitutions only. Check against the source.';const blob=new Blob([full],{type:'text/plain;charset=utf-8'});const url=URL.createObjectURL(blob);const link=document.createElement('a');link.href=url;link.download='scan2study-comparison.txt';link.click();URL.revokeObjectURL(url)});
+document.getElementById('downloadBtn').addEventListener('click',function(){if(!packet)return;const method=packet.engine==='ai'?'AI-generated explanation; verify against the source.':'Basic word substitutions only; verify against the source.';const full='SCAN2STUDY — STUDY NOTES\n\nWHAT YOU ENTERED\n'+packet.original+'\n\nEASY-TO-UNDERSTAND VERSION\n'+(packet.easy||packet.original)+(packet.studyTip?'\n\nSTUDY SHORTCUT\n'+packet.studyTip:'')+'\n\nNote: '+method;const blob=new Blob([full],{type:'text/plain;charset=utf-8'});const url=URL.createObjectURL(blob);const link=document.createElement('a');link.href=url;link.download='scan2study-comparison.txt';link.click();URL.revokeObjectURL(url)});
 </script></body></html>
