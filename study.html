@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f7f8ff">
+<meta name="description" content="Turn textbook photos into easier study notes with Scan2Study."><title>Study Workspace — Scan2Study</title>
+<style>
+:root{--ink:#18223b;--muted:#68728b;--line:#e4e8f4;--bg:#f7f8ff;--blue:#5365f5;--dark:#3949d8;--paper:#fff;--soft:#efeeff;--shadow:0 18px 56px #232c6410}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.6}button,input,textarea{font:inherit}button{cursor:pointer}a{color:inherit}
+.shell{width:min(1100px,calc(100% - 32px));margin:auto}header{height:76px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #e9ebf5}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-weight:900;font-size:21px;letter-spacing:-.6px}.mark{width:41px;height:41px;display:grid;place-items:center;border-radius:14px;background:var(--blue);color:white;font-size:22px;box-shadow:0 8px 22px #5365f536}.nav-note{font-size:13px;color:var(--muted);font-weight:700}
+.hero{text-align:center;padding:70px 0 64px}.eyebrow{display:inline-flex;padding:7px 13px;border:1px solid #dfdfff;background:#f0efff;color:#4e4acb;border-radius:999px;font-size:12px;font-weight:850;letter-spacing:.3px}
+h1{max-width:850px;margin:22px auto 18px;font-size:clamp(40px,7vw,76px);line-height:1.04;letter-spacing:-3.2px;font-weight:900}h1 span{color:var(--blue)}.hero-copy{max-width:640px;margin:0 auto;color:var(--muted);font-size:clamp(16px,2vw,19px)}
+.actions{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:28px}.btn{border:0;border-radius:13px;padding:13px 19px;background:var(--blue);color:#fff;font-weight:800;font-size:14px;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 8px 20px #5365f52b;transition:.16s}.btn:hover{background:var(--dark);transform:translateY(-1px)}.btn:disabled{opacity:.55;cursor:wait;transform:none}.btn.secondary{background:#fff;color:var(--ink);border:1px solid var(--line);box-shadow:none}
+.hero-art{display:flex;justify-content:center;align-items:center;gap:14px;margin:42px auto 0}.art-card{width:175px;padding:17px;background:#fff;border:1px solid var(--line);border-radius:18px;text-align:left;box-shadow:var(--shadow);transform:rotate(-3deg)}.art-card:last-child{transform:rotate(3deg)}.art-icon{font-size:30px;margin-bottom:7px}.art-line{height:7px;border-radius:8px;background:#edf0f7;margin-top:8px}.art-line.short{width:63%}.arrow{font-size:24px;color:var(--blue);font-weight:900}
+section{scroll-margin-top:24px}.intro{text-align:center;max-width:690px;margin:0 auto 26px}.kicker{font-size:12px;color:var(--blue);font-weight:900;letter-spacing:1.1px;text-transform:uppercase}h2{font-size:clamp(27px,4vw,39px);line-height:1.17;letter-spacing:-1.3px;margin:8px 0 10px}.intro p{color:var(--muted);font-size:15px;margin:0}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:70px}.step-card{display:flex;gap:13px;align-items:flex-start;background:#fff;border:1px solid var(--line);border-radius:19px;padding:20px}.step-icon{width:44px;height:44px;flex-shrink:0;display:grid;place-items:center;border-radius:14px;background:var(--soft);font-size:22px}.step-card h3{font-size:15px;margin:0 0 4px}.step-card p{font-size:13px;color:var(--muted);margin:0}
+.workspace{padding:4px 0 80px}.builder{background:#fff;border:1px solid var(--line);border-radius:25px;box-shadow:var(--shadow);overflow:hidden}.builder-head{padding:24px 27px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:16px}.builder-head h2{font-size:23px;margin:0 0 4px}.builder-head p{font-size:14px;color:var(--muted);margin:0}.step-pill{white-space:nowrap;padding:7px 10px;border-radius:9px;background:#eff0ff;color:#464ad6;font-weight:850;font-size:11px}
+.builder-body{padding:26px 27px 29px}.field-label{display:block;font-weight:850;font-size:14px;margin-bottom:10px}.upload-zone{min-height:190px;border:1.5px dashed #c8cfee;border-radius:18px;background:#fafaff;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px;transition:.18s}.upload-zone.drag{background:#f0efff;border-color:var(--blue)}.upload-symbol{width:52px;height:52px;border-radius:17px;background:#efedff;display:grid;place-items:center;font-size:26px;margin-bottom:9px}.upload-zone strong{font-size:15px}.upload-zone p{font-size:13px;color:var(--muted);margin:5px 0 12px}.file-button{border:1px solid #dcdfff;background:#fff;border-radius:10px;padding:9px 13px;font-size:13px;font-weight:800;color:var(--dark)}
+.file-meta{display:none;align-items:center;gap:13px;margin-top:13px;background:#f8f9ff;border:1px solid var(--line);border-radius:14px;padding:11px}.preview{width:54px;height:54px;border-radius:10px;object-fit:cover;background:#eff1f7}.file-info{min-width:0;flex:1}.file-info strong{display:block;font-size:13px;overflow-wrap:anywhere}.file-info span{display:block;font-size:12px;color:var(--muted)}.remove-button{border:0;background:transparent;color:#b44a5b;font-size:13px;font-weight:800;padding:7px}
+.or-divider{display:flex;align-items:center;gap:14px;color:#8a93a8;font-weight:750;font-size:11px;letter-spacing:1px;margin:22px 0}.or-divider:before,.or-divider:after{content:"";height:1px;flex:1;background:var(--line)}textarea{width:100%;min-height:110px;resize:vertical;padding:14px;border:1px solid #dfe4f1;border-radius:14px;background:#fff;color:var(--ink);outline:none;font-size:14px}textarea:focus,button:focus-visible,a:focus-visible{outline:3px solid #aeb5ff;outline-offset:2px}textarea::placeholder{color:#9aa2b4}.tiny-note{font-size:12px;color:var(--muted);margin:7px 0 0}
+.options-title{font-weight:850;font-size:14px;margin:27px 0 12px}.options{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.option-card{display:block;position:relative;border:1.5px solid var(--line);border-radius:17px;padding:17px;cursor:pointer;transition:.18s;background:#fff}.option-card:hover{border-color:#b8bfff;transform:translateY(-1px)}.option-card.selected{border-color:var(--blue);background:#f7f7ff;box-shadow:0 0 0 3px #5365f512}.option-card input{position:absolute;right:16px;top:17px;accent-color:var(--blue);width:17px;height:17px}.option-icon{width:42px;height:42px;display:grid;place-items:center;background:#efedff;border-radius:13px;font-size:22px;margin-bottom:10px}.option-card:nth-child(2) .option-icon{background:#e3f8ed}.option-card h3{margin:0 0 5px;font-size:15px}.option-card p{margin:0;color:var(--muted);font-size:13px;padding-right:15px}
+.generate-row{display:flex;align-items:center;gap:15px;margin-top:24px;flex-wrap:wrap}#generateBtn{min-width:190px}#status{font-size:13px;color:var(--muted);margin:0;flex:1;min-width:160px}.privacy{font-size:12px;color:var(--muted);margin-top:17px}footer{border-top:1px solid var(--line);padding:24px 0;color:var(--muted);font-size:12px}.footer-inner{display:flex;justify-content:space-between;gap:15px;flex-wrap:wrap}
+@media(max-width:780px){.steps{grid-template-columns:1fr;margin-bottom:50px}.step-card{padding:16px}.hero{padding:54px 0}.builder-head,.builder-body{padding-left:20px;padding-right:20px}.ask-wrap{grid-template-columns:1fr;padding:22px}.ask-benefits{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.ask-wrap{padding:17px;border-radius:20px}.ask-benefits{grid-template-columns:1fr}.chat-log{height:270px}.shell{width:calc(100% - 24px)}header{height:66px}.brand{font-size:18px}.mark{width:36px;height:36px}.nav-note{font-size:11px}.hero{padding:48px 0 52px}h1{letter-spacing:-2px}.hero-art{gap:6px;margin-top:34px}.art-card{width:42%;padding:13px}.arrow{font-size:18px}.builder{border-radius:20px}.builder-head{align-items:flex-start}.step-pill{font-size:10px}.options{grid-template-columns:1fr}.option-card{padding:16px}.generate-row #generateBtn{width:100%}.footer-inner{display:block}.footer-inner span{display:block;margin-top:5px}}
+
+.ask-section{padding:8px 0 76px}.ask-wrap{display:grid;grid-template-columns:1fr 1.05fr;gap:28px;align-items:center;padding:28px;background:linear-gradient(125deg,#f0efff,#f6fbff 55%,#eafaf3);border:1px solid #e4e7fa;border-radius:26px}.ask-copy h2{font-size:clamp(28px,4vw,38px);margin:8px 0 12px}.ask-copy>p{font-size:15px;color:var(--muted);max-width:450px}.ask-benefits{display:grid;grid-template-columns:1fr 1fr;gap:10px 14px;margin-top:20px;font-size:13px;color:#3f4b69}.ask-benefits span:before{content:'✓';color:#3b9b72;font-weight:900;margin-right:8px}.chat-card{background:#fff;border:1px solid var(--line);border-radius:20px;overflow:hidden;box-shadow:var(--shadow);min-width:0}.chat-head{display:flex;align-items:center;gap:11px;padding:16px 17px;border-bottom:1px solid var(--line)}.chat-avatar{width:39px;height:39px;display:grid;place-items:center;background:#efedff;border-radius:14px;font-size:21px}.chat-head strong{display:block;font-size:14px}.chat-head small{display:block;font-size:11px;color:var(--muted)}.chat-log{height:290px;overflow-y:auto;padding:15px;display:flex;flex-direction:column;gap:11px;background:#fcfcff}.chat-bubble{max-width:92%;padding:11px 13px;border-radius:14px;font-size:13px;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.65}.chat-bubble.assistant{align-self:flex-start;background:#f0f1fb;border:1px solid #e7e9f8;color:var(--ink);border-top-left-radius:5px}.chat-bubble.user{align-self:flex-end;background:var(--blue);color:#fff;border-top-right-radius:5px}.chat-bubble.error{background:#fff6e7;border-color:#f5e2b4;color:#77551b}.chat-prompts{display:flex;flex-wrap:wrap;gap:7px;padding:12px 13px 2px}.prompt-chip{border:1px solid #dfe3f6;border-radius:999px;background:#fff;color:#4b53c6;padding:7px 10px;font-size:11px;font-weight:750}.prompt-chip:hover{background:#f5f4ff;border-color:#bfc4ff}.chat-form{display:flex;gap:8px;padding:12px 13px 14px}.chat-input{min-width:0;flex:1;border:1px solid #dce1f0;border-radius:12px;padding:11px 12px;font-size:13px;outline:none}.chat-input:focus{border-color:var(--blue);box-shadow:0 0 0 3px #5365f514}.chat-send{width:43px;flex-shrink:0;border:0;border-radius:12px;background:var(--blue);color:#fff;font-size:18px;font-weight:900}.chat-send:disabled{opacity:.5;cursor:wait}.chat-note{margin:0;padding:0 14px 13px;color:var(--muted);font-size:10px}
+</style>
+</head>
+<body><div class="shell">
+<header><a class="brand" href="index.html" aria-label="Scan2Study home"><span class="mark">✦</span><span>Scan2Study</span></a><a class="nav-note" href="index.html" style="text-decoration:none">← Home</a></header>
+<main>
+<section class="hero" aria-labelledby="welcome-title">
+<span class="eyebrow">📚 YOUR FRIENDLY STUDY SPACE</span>
+<h1 id="welcome-title">Welcome!<br>Make your studying <span>easier with me.</span></h1>
+<p class="hero-copy">Got a confusing textbook page? Bring it here. We’ll turn your study material into simpler words, so it feels easier to learn one idea at a time.</p>
+<div class="actions"><a class="btn" href="#workspace">Let’s make it easier <span aria-hidden="true">↓</span></a><a class="btn secondary" href="#how-it-works">How it works</a></div>
+<div class="hero-art" aria-hidden="true"><div class="art-card"><div class="art-icon">📖</div><div class="art-line"></div><div class="art-line"></div><div class="art-line short"></div></div><div class="arrow">→</div><div class="art-card"><div class="art-icon">💡</div><div class="art-line"></div><div class="art-line short"></div><div class="art-line"></div></div></div>
+</section>
+<section id="workspace" class="workspace" aria-labelledby="workspace-title"><div class="intro"><span class="kicker">PAGE 2 OF 3 · STUDY WORKSPACE</span><h2 id="workspace-title">Add your question or textbook</h2><p>Paste a question or study passage, or upload a textbook image. Your answer opens on the next page.</p></div>
+<div class="builder"><div class="builder-head"><div><h2>Add your textbook material</h2><p>Use a clear photo so the words are easier to read.</p></div><span class="step-pill">PAGE 2 OF 3</span></div>
+<div class="builder-body"><label class="field-label" for="fileInput">Textbook image</label><input id="fileInput" type="file" accept="image/jpeg,image/png,image/webp" hidden>
+<div id="dropZone" class="upload-zone" role="button" tabindex="0" aria-label="Choose or drop a textbook image"><div class="upload-symbol">📄</div><strong>Drop your textbook image here</strong><p>JPG, PNG, or WEBP · up to 10 MB</p><button id="chooseBtn" class="file-button" type="button">Choose image</button></div>
+<div id="fileMeta" class="file-meta"><img id="preview" class="preview" alt="Preview of selected textbook image"><div class="file-info"><strong id="fileName"></strong><span id="fileSize"></span></div><button id="removeBtn" class="remove-button" type="button">Remove</button></div>
+<div class="or-divider">OR PASTE TEXT</div><label class="field-label" for="textInput">Text you want to understand</label><textarea id="textInput" placeholder="Paste a paragraph from your textbook here…"></textarea><p class="tiny-note">Use an image or pasted text. If both are provided, the image will be processed first.</p>
+<div class="options-title">What do you want me to do?</div><div class="options" role="radiogroup" aria-label="Choose a study mode">
+<label class="option-card selected" id="easyOption"><input type="radio" name="mode" value="meaning" checked><div class="option-icon">💬</div><h3>Text meaning</h3><p>Turn difficult wording into easier words while keeping the original idea beside it.</p></label>
+<label class="option-card" id="shortcutOption"><input type="radio" name="mode" value="shortcut"><div class="option-icon">⚡</div><h3>Quick study shortcut</h3><p>Get an easier version plus a small study tip to help you revise the idea.</p></label>
+</div>
+<div class="generate-row"><button id="generateBtn" class="btn" type="button">Get explanation <span aria-hidden="true">→</span></button><p id="status" role="status" aria-live="polite">Add an image or paste text to get started.</p></div>
+<p class="privacy">AI-powered explanations work when the Flask backend is connected and configured. Otherwise, Scan2Study uses basic word substitutions. When AI is enabled, your study text is sent to the configured AI provider. Do not submit private or sensitive information.</p>
+</div></div></section>
+
+</main><footer><div class="footer-inner"><span><strong>✦ Scan2Study</strong> · Small steps, clearer learning.</span><span>Made for curious minds 📚</span></div></footer>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+<script src="config.js"></script>
+<script>
+const configuredApiBase=(window.SCAN2STUDY_CONFIG&&window.SCAN2STUDY_CONFIG.apiBaseUrl||"").trim();
+const API_BASE_URL=configuredApiBase.replace(/\/+$/,"");
+function apiUrl(path){return API_BASE_URL+path}
+const fileInput=document.getElementById('fileInput'),dropZone=document.getElementById('dropZone'),chooseBtn=document.getElementById('chooseBtn'),generateBtn=document.getElementById('generateBtn'),textInput=document.getElementById('textInput'),statusText=document.getElementById('status'),fileMeta=document.getElementById('fileMeta'),preview=document.getElementById('preview');
+let selectedFile=null,previewUrl=null;
+function setStatus(message){statusText.textContent=message}
+function selectFile(file){if(!file)return;if(!['image/jpeg','image/png','image/webp'].includes(file.type)){setStatus('Please choose a JPG, PNG, or WEBP image.');return}if(file.size>10*1024*1024){setStatus('This image is over 10 MB. Please choose a smaller file.');return}selectedFile=file;if(previewUrl)URL.revokeObjectURL(previewUrl);previewUrl=URL.createObjectURL(file);preview.src=previewUrl;document.getElementById('fileName').textContent=file.name;document.getElementById('fileSize').textContent=(file.size/1024/1024).toFixed(2)+' MB · Ready to read';fileMeta.style.display='flex';dropZone.style.display='none';setStatus('Image ready. Choose a study style, then generate.')}
+function resetFile(){selectedFile=null;fileInput.value='';if(previewUrl)URL.revokeObjectURL(previewUrl);previewUrl=null;preview.removeAttribute('src');fileMeta.style.display='none';dropZone.style.display='flex';setStatus(textInput.value.trim()?'Text is ready. Choose a study style, then generate.':'Add an image or paste text to get started.')}
+chooseBtn.addEventListener('click',function(event){event.stopPropagation();fileInput.click()});
+dropZone.addEventListener('click',function(event){if(event.target!==chooseBtn)fileInput.click()});
+dropZone.addEventListener('keydown',function(event){if(event.key==='Enter'||event.key===' '){event.preventDefault();fileInput.click()}});
+fileInput.addEventListener('change',function(event){selectFile(event.target.files[0])});document.getElementById('removeBtn').addEventListener('click',resetFile);
+['dragenter','dragover'].forEach(function(type){dropZone.addEventListener(type,function(event){event.preventDefault();dropZone.classList.add('drag')})});
+['dragleave','drop'].forEach(function(type){dropZone.addEventListener(type,function(event){event.preventDefault();dropZone.classList.remove('drag')})});
+dropZone.addEventListener('drop',function(event){if(event.dataTransfer.files&&event.dataTransfer.files.length)selectFile(event.dataTransfer.files[0])});
+document.querySelectorAll('input[name="mode"]').forEach(function(input){input.addEventListener('change',function(){document.getElementById('easyOption').classList.toggle('selected',input.value==='meaning'&&input.checked);document.getElementById('shortcutOption').classList.toggle('selected',input.value==='shortcut'&&input.checked)})});
+function browserSimplify(text){
+const replacements=[['due to the fact that','because'],['as a consequence of','because of'],['at this point in time','now'],['for the purpose of','to'],['in the event that','if'],['subsequent to','after'],['prior to','before'],['in addition to','also'],['make use of','use'],['is characterized by','has'],['is defined as','means'],['consists of','is made of'],['approximately','about'],['demonstrates','shows'],['demonstrate','show'],['illustrates','shows'],['facilitate','help'],['utilization','use'],['utilize','use'],['commence','start'],['terminate','end'],['sufficient','enough'],['obtain','get'],['assist','help'],['indicate','show'],['occur','happen'],['essential','important'],['numerous','many'],['individuals','people'],['predominantly','mostly'],['substantial','large'],['fundamental','basic'],['methodology','method'],['synthesize','combine'],['therefore','so'],['however','but'],['consequently','as a result'],['require','need']];
+let result=text;replacements.forEach(function(pair){const phrase=pair[0].split(' ').join('\\s+');const pattern=new RegExp('(?<!\\w)'+phrase+'(?!\\w)','gi');result=result.replace(pattern,function(match){return match.charAt(0)===match.charAt(0).toUpperCase()?pair[1].charAt(0).toUpperCase()+pair[1].slice(1):pair[1]})});return result
+}
+async function getBackendHealth(){try{const response=await fetch(apiUrl('/api/health'),{headers:{'Accept':'application/json'}});if(!response.ok)return null;const data=await response.json();return data.status==='ok'?data:null}catch(error){return null}}
+function openResults(original,easy,mode,source,engine,studyTip,notice){try{sessionStorage.setItem('scan2studyResult',JSON.stringify({original:original,easy:easy||browserSimplify(original),mode:mode,source:source,engine:engine||'fallback',studyTip:studyTip||'',notice:notice||'',createdAt:new Date().toISOString()}));window.location.href='result.html'}catch(error){setStatus('Your browser blocked temporary storage. Please allow site storage and try again.');generateBtn.disabled=false;generateBtn.innerHTML='Generate easy text <span aria-hidden="true">→</span>'}}
+generateBtn.addEventListener('click',async function(){
+ const pastedText=textInput.value.trim();
+ if(!selectedFile&&!pastedText){setStatus('Add a textbook image or paste some text first.');return}
+ const mode=document.querySelector('input[name="mode"]:checked').value;
+ generateBtn.disabled=true;generateBtn.textContent='Preparing your study page…';
+ try{
+  let original='',easy='',source='text',engine='fallback',studyTip='',notice='';
+  const backend=await getBackendHealth();
+  if(selectedFile&&backend){
+   setStatus('Reading your image with the Scan2Study backend…');
+   const formData=new FormData();formData.append('image',selectedFile);
+   const response=await fetch(apiUrl('/api/process'),{method:'POST',body:formData});
+   const payload=await response.json().catch(function(){return {}});
+   if(!response.ok)throw new Error(payload.error||'The backend could not read that image.');
+   original=(payload.extracted_text||'').trim();source='image';
+  }else if(selectedFile){
+   if(!window.Tesseract)throw new Error('The image reader did not load. Check your internet connection and try again.');
+   setStatus('Reading the textbook image… this can take a little while.');
+   const result=await Tesseract.recognize(selectedFile,'eng',{logger:function(info){if(info.status==='recognizing text'&&info.progress)setStatus('Reading text… '+Math.round(info.progress*100)+'%')}});
+   original=(result.data.text||'').trim();source='image';
+   if(!original)throw new Error('No text found. Try a sharper photo with better lighting.');
+  }else{original=pastedText;source='text'}
+  if(!original.trim())throw new Error('No text was found. Please try a clearer image or paste the text.');
+  if(backend&&backend.ai_enabled){
+   try{
+    setStatus('Creating a genuinely AI-powered explanation…');
+    const response=await fetch(apiUrl('/api/explain'),{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({text:original,mode:mode})});
+    const payload=await response.json().catch(function(){return {}});
+    if(!response.ok)throw new Error(payload.error||'The AI service is unavailable right now.');
+    if(!payload.easy_text)throw new Error('The AI service returned an empty explanation.');
+    easy=payload.easy_text;studyTip=payload.study_tip||'';engine='ai';
+    notice='AI-generated explanation. Check it against the original for exact facts, formulas, dates, and definitions.';
+   }catch(aiError){
+    easy=browserSimplify(original);engine='fallback';
+    notice=(aiError.message||'The AI service was unavailable.')+' This result uses basic word substitutions instead.';
+    setStatus('AI unavailable — opening a basic-word fallback.');
+   }
+  }else{
+   easy=browserSimplify(original);engine='fallback';
+   notice=backend?'The backend is connected, but its AI key is not configured. This result uses basic word substitutions.':'The AI backend is not connected to this page yet. This result uses basic word substitutions.';
+  }
+  openResults(original,easy,mode,source,engine,studyTip,notice);
+ }catch(error){setStatus(error.message||'Something went wrong. Please try again.');generateBtn.disabled=false;generateBtn.innerHTML='Generate easy text <span aria-hidden="true">→</span>'}
+});
+textInput.addEventListener('input',function(){if(!selectedFile&&textInput.value.trim())setStatus('Text is ready. Choose a study style, then generate.');else if(!selectedFile)setStatus('Add an image or paste text to get started.')});
+
+</script></body></html>
