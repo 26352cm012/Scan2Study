@@ -27,35 +27,19 @@ section{scroll-margin-top:24px}.intro{text-align:center;max-width:690px;margin:0
 </style>
 </head>
 <body><div class="shell">
-<header><a class="brand" href="./" aria-label="Scan2Study home"><span class="mark">✦</span><span>Scan2Study</span></a><span class="nav-note">Learn at your own pace ✨</span></header>
+<header><a class="brand" href="./" aria-label="Scan2Study home"><span class="mark">✦</span><span>Scan2Study</span></a><a class="nav-note" href="study.html" style="text-decoration:none">Start studying →</a></header>
 <main>
 <section class="hero" aria-labelledby="welcome-title">
 <span class="eyebrow">📚 YOUR FRIENDLY STUDY SPACE</span>
 <h1 id="welcome-title">Welcome!<br>Make your studying <span>easier with me.</span></h1>
 <p class="hero-copy">Got a confusing textbook page? Bring it here. We’ll turn your study material into simpler words, so it feels easier to learn one idea at a time.</p>
-<div class="actions"><a class="btn" href="#workspace">Let’s make it easier <span aria-hidden="true">↓</span></a><a class="btn secondary" href="#how-it-works">How it works</a></div>
+<div class="actions"><a class="btn" href="study.html">Start studying <span aria-hidden="true">→</span></a><a class="btn secondary" href="#ask-scan2study">Ask Scan2Study ↓</a></div>
 <div class="hero-art" aria-hidden="true"><div class="art-card"><div class="art-icon">📖</div><div class="art-line"></div><div class="art-line"></div><div class="art-line short"></div></div><div class="arrow">→</div><div class="art-card"><div class="art-icon">💡</div><div class="art-line"></div><div class="art-line short"></div><div class="art-line"></div></div></div>
 </section>
-<section id="how-it-works" aria-labelledby="how-title"><div class="intro"><span class="kicker">THREE LITTLE STEPS</span><h2 id="how-title">From textbook to “I get it!”</h2><p>Start with a clear photo or paste the text you want to understand.</p></div>
-<div class="steps"><article class="step-card"><div class="step-icon">📷</div><div><h3>1. Add your study material</h3><p>Upload a textbook picture, or paste a passage into the text box.</p></div></article><article class="step-card"><div class="step-icon">🧠</div><div><h3>2. Choose your study style</h3><p>Ask for easy meaning or a quick study shortcut.</p></div></article><article class="step-card"><div class="step-icon">✨</div><div><h3>3. Compare and learn</h3><p>See your original text beside a simpler version on a fresh page.</p></div></article></div></section>
-<section id="workspace" class="workspace" aria-labelledby="workspace-title"><div class="intro"><span class="kicker">YOUR STUDY WORKSPACE</span><h2 id="workspace-title">What are we learning today?</h2><p>Start with an image or text. Then choose what kind of help you need.</p></div>
-<div class="builder"><div class="builder-head"><div><h2>Add your textbook material</h2><p>Use a clear photo so the words are easier to read.</p></div><span class="step-pill">STEP 1 OF 2</span></div>
-<div class="builder-body"><label class="field-label" for="fileInput">Textbook image</label><input id="fileInput" type="file" accept="image/jpeg,image/png,image/webp" hidden>
-<div id="dropZone" class="upload-zone" role="button" tabindex="0" aria-label="Choose or drop a textbook image"><div class="upload-symbol">📄</div><strong>Drop your textbook image here</strong><p>JPG, PNG, or WEBP · up to 10 MB</p><button id="chooseBtn" class="file-button" type="button">Choose image</button></div>
-<div id="fileMeta" class="file-meta"><img id="preview" class="preview" alt="Preview of selected textbook image"><div class="file-info"><strong id="fileName"></strong><span id="fileSize"></span></div><button id="removeBtn" class="remove-button" type="button">Remove</button></div>
-<div class="or-divider">OR PASTE TEXT</div><label class="field-label" for="textInput">Text you want to understand</label><textarea id="textInput" placeholder="Paste a paragraph from your textbook here…"></textarea><p class="tiny-note">Use an image or pasted text. If both are provided, the image will be processed first.</p>
-<div class="options-title">What do you want me to do?</div><div class="options" role="radiogroup" aria-label="Choose a study mode">
-<label class="option-card selected" id="easyOption"><input type="radio" name="mode" value="meaning" checked><div class="option-icon">💬</div><h3>Text meaning</h3><p>Turn difficult wording into easier words while keeping the original idea beside it.</p></label>
-<label class="option-card" id="shortcutOption"><input type="radio" name="mode" value="shortcut"><div class="option-icon">⚡</div><h3>Quick study shortcut</h3><p>Get an easier version plus a small study tip to help you revise the idea.</p></label>
-</div>
-<div class="generate-row"><button id="generateBtn" class="btn" type="button">Generate easy text <span aria-hidden="true">→</span></button><p id="status" role="status" aria-live="polite">Add an image or paste text to get started.</p></div>
-<p class="privacy">AI-powered explanations work when the Flask backend is connected and configured. Otherwise, Scan2Study uses basic word substitutions. When AI is enabled, your study text is sent to the configured AI provider. Do not submit private or sensitive information.</p>
-</div></div></section>
-
 <section id="ask-scan2study" class="ask-section" aria-labelledby="ask-title">
  <div class="ask-wrap">
   <div class="ask-copy">
-   <span class="kicker">YOUR AI STUDY COMPANION</span>
+   <span class="kicker">PAGE 1 · YOUR AI STUDY COMPANION</span>
    <h2 id="ask-title">Ask Scan2Study ✨</h2>
    <p>Got a question? Ask about school topics, textbook notes, examples, or anything you want to understand better. Ask follow-up questions, too.</p>
    <div class="ask-benefits"><span>Clear, simple explanations</span><span>Step-by-step help</span><span>Examples and study tips</span><span>Follow-up questions</span></div>
@@ -86,71 +70,6 @@ section{scroll-margin-top:24px}.intro{text-align:center;max-width:690px;margin:0
 const configuredApiBase=(window.SCAN2STUDY_CONFIG&&window.SCAN2STUDY_CONFIG.apiBaseUrl||"").trim();
 const API_BASE_URL=configuredApiBase.replace(/\/+$/,"");
 function apiUrl(path){return API_BASE_URL+path}
-const fileInput=document.getElementById('fileInput'),dropZone=document.getElementById('dropZone'),chooseBtn=document.getElementById('chooseBtn'),generateBtn=document.getElementById('generateBtn'),textInput=document.getElementById('textInput'),statusText=document.getElementById('status'),fileMeta=document.getElementById('fileMeta'),preview=document.getElementById('preview');
-let selectedFile=null,previewUrl=null;
-function setStatus(message){statusText.textContent=message}
-function selectFile(file){if(!file)return;if(!['image/jpeg','image/png','image/webp'].includes(file.type)){setStatus('Please choose a JPG, PNG, or WEBP image.');return}if(file.size>10*1024*1024){setStatus('This image is over 10 MB. Please choose a smaller file.');return}selectedFile=file;if(previewUrl)URL.revokeObjectURL(previewUrl);previewUrl=URL.createObjectURL(file);preview.src=previewUrl;document.getElementById('fileName').textContent=file.name;document.getElementById('fileSize').textContent=(file.size/1024/1024).toFixed(2)+' MB · Ready to read';fileMeta.style.display='flex';dropZone.style.display='none';setStatus('Image ready. Choose a study style, then generate.')}
-function resetFile(){selectedFile=null;fileInput.value='';if(previewUrl)URL.revokeObjectURL(previewUrl);previewUrl=null;preview.removeAttribute('src');fileMeta.style.display='none';dropZone.style.display='flex';setStatus(textInput.value.trim()?'Text is ready. Choose a study style, then generate.':'Add an image or paste text to get started.')}
-chooseBtn.addEventListener('click',function(event){event.stopPropagation();fileInput.click()});
-dropZone.addEventListener('click',function(event){if(event.target!==chooseBtn)fileInput.click()});
-dropZone.addEventListener('keydown',function(event){if(event.key==='Enter'||event.key===' '){event.preventDefault();fileInput.click()}});
-fileInput.addEventListener('change',function(event){selectFile(event.target.files[0])});document.getElementById('removeBtn').addEventListener('click',resetFile);
-['dragenter','dragover'].forEach(function(type){dropZone.addEventListener(type,function(event){event.preventDefault();dropZone.classList.add('drag')})});
-['dragleave','drop'].forEach(function(type){dropZone.addEventListener(type,function(event){event.preventDefault();dropZone.classList.remove('drag')})});
-dropZone.addEventListener('drop',function(event){if(event.dataTransfer.files&&event.dataTransfer.files.length)selectFile(event.dataTransfer.files[0])});
-document.querySelectorAll('input[name="mode"]').forEach(function(input){input.addEventListener('change',function(){document.getElementById('easyOption').classList.toggle('selected',input.value==='meaning'&&input.checked);document.getElementById('shortcutOption').classList.toggle('selected',input.value==='shortcut'&&input.checked)})});
-function browserSimplify(text){
-const replacements=[['due to the fact that','because'],['as a consequence of','because of'],['at this point in time','now'],['for the purpose of','to'],['in the event that','if'],['subsequent to','after'],['prior to','before'],['in addition to','also'],['make use of','use'],['is characterized by','has'],['is defined as','means'],['consists of','is made of'],['approximately','about'],['demonstrates','shows'],['demonstrate','show'],['illustrates','shows'],['facilitate','help'],['utilization','use'],['utilize','use'],['commence','start'],['terminate','end'],['sufficient','enough'],['obtain','get'],['assist','help'],['indicate','show'],['occur','happen'],['essential','important'],['numerous','many'],['individuals','people'],['predominantly','mostly'],['substantial','large'],['fundamental','basic'],['methodology','method'],['synthesize','combine'],['therefore','so'],['however','but'],['consequently','as a result'],['require','need']];
-let result=text;replacements.forEach(function(pair){const phrase=pair[0].split(' ').join('\\s+');const pattern=new RegExp('(?<!\\w)'+phrase+'(?!\\w)','gi');result=result.replace(pattern,function(match){return match.charAt(0)===match.charAt(0).toUpperCase()?pair[1].charAt(0).toUpperCase()+pair[1].slice(1):pair[1]})});return result
-}
-async function getBackendHealth(){try{const response=await fetch(apiUrl('/api/health'),{headers:{'Accept':'application/json'}});if(!response.ok)return null;const data=await response.json();return data.status==='ok'?data:null}catch(error){return null}}
-function openResults(original,easy,mode,source,engine,studyTip,notice){try{sessionStorage.setItem('scan2studyResult',JSON.stringify({original:original,easy:easy||browserSimplify(original),mode:mode,source:source,engine:engine||'fallback',studyTip:studyTip||'',notice:notice||'',createdAt:new Date().toISOString()}));window.location.href='result.html'}catch(error){setStatus('Your browser blocked temporary storage. Please allow site storage and try again.');generateBtn.disabled=false;generateBtn.innerHTML='Generate easy text <span aria-hidden="true">→</span>'}}
-generateBtn.addEventListener('click',async function(){
- const pastedText=textInput.value.trim();
- if(!selectedFile&&!pastedText){setStatus('Add a textbook image or paste some text first.');return}
- const mode=document.querySelector('input[name="mode"]:checked').value;
- generateBtn.disabled=true;generateBtn.textContent='Preparing your study page…';
- try{
-  let original='',easy='',source='text',engine='fallback',studyTip='',notice='';
-  const backend=await getBackendHealth();
-  if(selectedFile&&backend){
-   setStatus('Reading your image with the Scan2Study backend…');
-   const formData=new FormData();formData.append('image',selectedFile);
-   const response=await fetch(apiUrl('/api/process'),{method:'POST',body:formData});
-   const payload=await response.json().catch(function(){return {}});
-   if(!response.ok)throw new Error(payload.error||'The backend could not read that image.');
-   original=(payload.extracted_text||'').trim();source='image';
-  }else if(selectedFile){
-   if(!window.Tesseract)throw new Error('The image reader did not load. Check your internet connection and try again.');
-   setStatus('Reading the textbook image… this can take a little while.');
-   const result=await Tesseract.recognize(selectedFile,'eng',{logger:function(info){if(info.status==='recognizing text'&&info.progress)setStatus('Reading text… '+Math.round(info.progress*100)+'%')}});
-   original=(result.data.text||'').trim();source='image';
-   if(!original)throw new Error('No text found. Try a sharper photo with better lighting.');
-  }else{original=pastedText;source='text'}
-  if(!original.trim())throw new Error('No text was found. Please try a clearer image or paste the text.');
-  if(backend&&backend.ai_enabled){
-   try{
-    setStatus('Creating a genuinely AI-powered explanation…');
-    const response=await fetch(apiUrl('/api/explain'),{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({text:original,mode:mode})});
-    const payload=await response.json().catch(function(){return {}});
-    if(!response.ok)throw new Error(payload.error||'The AI service is unavailable right now.');
-    if(!payload.easy_text)throw new Error('The AI service returned an empty explanation.');
-    easy=payload.easy_text;studyTip=payload.study_tip||'';engine='ai';
-    notice='AI-generated explanation. Check it against the original for exact facts, formulas, dates, and definitions.';
-   }catch(aiError){
-    easy=browserSimplify(original);engine='fallback';
-    notice=(aiError.message||'The AI service was unavailable.')+' This result uses basic word substitutions instead.';
-    setStatus('AI unavailable — opening a basic-word fallback.');
-   }
-  }else{
-   easy=browserSimplify(original);engine='fallback';
-   notice=backend?'The backend is connected, but its AI key is not configured. This result uses basic word substitutions.':'The AI backend is not connected to this page yet. This result uses basic word substitutions.';
-  }
-  openResults(original,easy,mode,source,engine,studyTip,notice);
- }catch(error){setStatus(error.message||'Something went wrong. Please try again.');generateBtn.disabled=false;generateBtn.innerHTML='Generate easy text <span aria-hidden="true">→</span>'}
-});
-textInput.addEventListener('input',function(){if(!selectedFile&&textInput.value.trim())setStatus('Text is ready. Choose a study style, then generate.');else if(!selectedFile)setStatus('Add an image or paste text to get started.')});
-
 const chatForm=document.getElementById('chatForm');
 const chatInput=document.getElementById('chatInput');
 const chatSend=document.getElementById('chatSend');
@@ -182,8 +101,14 @@ async function sendChatQuestion(question){
   if(!response.ok)throw new Error(payload.error||'The AI service is not available yet.');
   if(!payload.answer)throw new Error('I couldn’t get an answer this time. Please try again.');
   pending.remove();
-  addChatBubble(payload.answer,'assistant');
-  chatHistory=nextHistory.concat([{role:'assistant',content:payload.answer}]).slice(-8);
+  try{
+   sessionStorage.setItem('scan2studyResult',JSON.stringify({type:'chat',question:cleanQuestion,answer:payload.answer,engine:payload.engine||'ai',createdAt:new Date().toISOString()}));
+   window.location.href='result.html';
+   return;
+  }catch(storageError){
+   addChatBubble(payload.answer,'assistant');
+   chatHistory=nextHistory.concat([{role:'assistant',content:payload.answer}]).slice(-8);
+  }
  }catch(error){
   pending.remove();
   addChatBubble((error.message||'I couldn’t reach the AI service.')+' If this is the GitHub Pages demo, the Flask backend needs to be deployed and configured in config.js first.','assistant error');
