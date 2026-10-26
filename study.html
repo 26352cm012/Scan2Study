@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f7f8ff">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0b1020">
 <meta name="description" content="Turn textbook photos into easier study notes with Scan2Study."><title>Study Workspace — Scan2Study</title>
 <style>
 :root{--ink:#18223b;--muted:#68728b;--line:#e4e8f4;--bg:#f7f8ff;--blue:#5365f5;--dark:#3949d8;--paper:#fff;--soft:#efeeff;--shadow:0 18px 56px #232c6410}
@@ -24,6 +24,26 @@ section{scroll-margin-top:24px}.intro{text-align:center;max-width:690px;margin:0
 @media(max-width:560px){.ask-wrap{padding:17px;border-radius:20px}.ask-benefits{grid-template-columns:1fr}.chat-log{height:270px}.shell{width:calc(100% - 24px)}header{height:66px}.brand{font-size:18px}.mark{width:36px;height:36px}.nav-note{font-size:11px}.hero{padding:48px 0 52px}h1{letter-spacing:-2px}.hero-art{gap:6px;margin-top:34px}.art-card{width:42%;padding:13px}.arrow{font-size:18px}.builder{border-radius:20px}.builder-head{align-items:flex-start}.step-pill{font-size:10px}.options{grid-template-columns:1fr}.option-card{padding:16px}.generate-row #generateBtn{width:100%}.footer-inner{display:block}.footer-inner span{display:block;margin-top:5px}}
 
 .ask-section{padding:8px 0 76px}.ask-wrap{display:grid;grid-template-columns:1fr 1.05fr;gap:28px;align-items:center;padding:28px;background:linear-gradient(125deg,#f0efff,#f6fbff 55%,#eafaf3);border:1px solid #e4e7fa;border-radius:26px}.ask-copy h2{font-size:clamp(28px,4vw,38px);margin:8px 0 12px}.ask-copy>p{font-size:15px;color:var(--muted);max-width:450px}.ask-benefits{display:grid;grid-template-columns:1fr 1fr;gap:10px 14px;margin-top:20px;font-size:13px;color:#3f4b69}.ask-benefits span:before{content:'✓';color:#3b9b72;font-weight:900;margin-right:8px}.chat-card{background:#fff;border:1px solid var(--line);border-radius:20px;overflow:hidden;box-shadow:var(--shadow);min-width:0}.chat-head{display:flex;align-items:center;gap:11px;padding:16px 17px;border-bottom:1px solid var(--line)}.chat-avatar{width:39px;height:39px;display:grid;place-items:center;background:#efedff;border-radius:14px;font-size:21px}.chat-head strong{display:block;font-size:14px}.chat-head small{display:block;font-size:11px;color:var(--muted)}.chat-log{height:290px;overflow-y:auto;padding:15px;display:flex;flex-direction:column;gap:11px;background:#fcfcff}.chat-bubble{max-width:92%;padding:11px 13px;border-radius:14px;font-size:13px;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.65}.chat-bubble.assistant{align-self:flex-start;background:#f0f1fb;border:1px solid #e7e9f8;color:var(--ink);border-top-left-radius:5px}.chat-bubble.user{align-self:flex-end;background:var(--blue);color:#fff;border-top-right-radius:5px}.chat-bubble.error{background:#fff6e7;border-color:#f5e2b4;color:#77551b}.chat-prompts{display:flex;flex-wrap:wrap;gap:7px;padding:12px 13px 2px}.prompt-chip{border:1px solid #dfe3f6;border-radius:999px;background:#fff;color:#4b53c6;padding:7px 10px;font-size:11px;font-weight:750}.prompt-chip:hover{background:#f5f4ff;border-color:#bfc4ff}.chat-form{display:flex;gap:8px;padding:12px 13px 14px}.chat-input{min-width:0;flex:1;border:1px solid #dce1f0;border-radius:12px;padding:11px 12px;font-size:13px;outline:none}.chat-input:focus{border-color:var(--blue);box-shadow:0 0 0 3px #5365f514}.chat-send{width:43px;flex-shrink:0;border:0;border-radius:12px;background:var(--blue);color:#fff;font-size:18px;font-weight:900}.chat-send:disabled{opacity:.5;cursor:wait}.chat-note{margin:0;padding:0 14px 13px;color:var(--muted);font-size:10px}
+
+/* Scan2Study dark theme */
+:root{color-scheme:dark;--ink:#edf2ff;--muted:#a7b2cc;--line:#303b55;--bg:#0b1020;--blue:#8290ff;--dark:#6675f4;--paper:#151d31;--soft:#222a45;--shadow:0 18px 56px #0007}
+body{background:var(--bg)!important;color:var(--ink)!important}
+header,footer,.footer-inner{border-color:#28334b!important}
+.brand,.nav-not a,.hero h1,.hero h2,.panel-title,.chat-title,.option-title,.field-label,label,strong{color:var(--ink)}
+p,.muted,.nav-note,.hero-copy,.panel-sub,.tiny-note,.chat-note,.privacy,.step p,.notice{color:var(--muted)}
+.art-card,.step-card,.workspace,.builder-head,.builder-body,.preview,.option-card,.chat-card,.chat-bubble,.panel,.pane,.panel-hea,.notice,.empty,.tip,.chat-input,.chat-prompt,.ask-section,.compar,.content,.file-info,.file-meta,.upload-zone,.field-label+input,.field-label+textarea{background:#151d31!important;color:var(--ink)!important;border-color:#303b55!important}
+input,textarea,select{background:#0e1628!important;color:#edf2ff!important;border:1px solid #394662!important}
+input::placeholder,textarea::placeholder{color:#8e9bb7!important}
+button.secondary,.secondar,.file-button,.prompt-chip,.option{background:#202a43!important;color:#e4eaff!important;border-color:#394662!important}
+a{color:#aab5ff}
+hr,.or-divider{border-color:#303b55!important}
+.upload-zone:hover,.option-card:hover,.prompt-chip:hover{background:#202a43!important}
+.chat-bubble.assistant,.assistant{background:#1c2740!important;color:#edf2ff!important}
+.chat-bubble.user,.user{background:#303b72!important;color:#fff!important}
+.pill,.step-pill{background:#222a45!important;color:#cbd3ff!important;border-color:#3b4665!important}
+.remove-button{background:#2a1b2b!important;color:#ffb8c4!important}
+img,svg{max-width:100%}
+
 </style>
 </head>
 <body><div class="shell">
