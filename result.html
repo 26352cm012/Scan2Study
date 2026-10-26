@@ -14,9 +14,9 @@ header{height:76px;display:flex;align-items:center;justify-content:space-between
 @media(max-width:500px){.shell{width:calc(100% - 22px)}header{height:66px}.brand{font-size:18px}.mark{width:36px;height:36px}.top-link{font-size:11px}.hero h1{letter-spacing:-1.3px}.panel-head{display:block}.pill{display:inline-block;margin-top:10px}.tip{padding:15px}}
 </style></head>
 <body><div class="shell">
-<header><a class="brand" href="index.html"><span class="mark">✦</span><span>Scan2Study</span></a><a class="top-link" href="index.html#workspace">Start another page ↗</a></header>
+<header><a class="brand" href="index.html"><span class="mark">✦</span><span>Scan2Study</span></a><a class="top-link" href="study.html">New study question ↗</a></header>
 <main>
-<section class="hero"><a class="back" href="index.html#workspace">← Back to your study workspace</a><br><span class="eyebrow">YOUR STUDY PAGE</span><h1>Let’s make this easier. 💡</h1><p>Compare your original material with a simpler version. Keep the original nearby so you can double-check important details.</p></section>
+<section class="hero"><a class="back" href="study.html">← Back to your study workspace</a><br><span class="eyebrow">YOUR STUDY PAGE</span><h1>Let’s make this easier. 💡</h1><p>Compare your original material with a simpler version. Keep the original nearby so you can double-check important details.</p></section>
 <div id="missingNotice" class="notice">There isn’t a study result open in this tab yet. Go back to the workspace and add an image or text first.</div><div id="resultNotice" class="notice" role="status" aria-live="polite"></div>
 <section class="compare" aria-label="Original and easier text comparison">
 <article class="panel"><div class="panel-head"><div><h2 class="panel-title">What you entered</h2><p class="panel-sub" id="originalSubtitle">Original text from your study material</p></div><span class="pill">ORIGINAL</span></div><div class="content" id="originalContent"></div><div class="panel-actions"><button class="btn secondary" id="copyOriginal" type="button">Copy original</button></div></article>
@@ -30,7 +30,22 @@ header{height:76px;display:flex;align-items:center;justify-content:space-between
 let packet=null;
 try{packet=JSON.parse(sessionStorage.getItem('scan2studyResult')||'null')}catch(error){packet=null}
 const originalContent=document.getElementById('originalContent'),easyContent=document.getElementById('easyContent');
-if(!packet||!packet.original){document.getElementById('missingNotice').style.display='block';originalContent.textContent='No study text yet.';easyContent.textContent='Add material on the previous page to create your comparison.';originalContent.classList.add('empty');easyContent.classList.add('empty');document.getElementById('shortcutTip').style.display='none';document.getElementById('qualityTip').style.display='none'}
+if(packet&&packet.type==='chat'){
+ document.querySelector('.hero .eyebrow').textContent='PAGE 3 OF 3 · ASK SCAN2STUDY ANSWER';
+ document.querySelector('.hero h1').textContent='Here’s your answer. ✨';
+ document.querySelector('.hero p').textContent='Your question and Scan2Study’s explanation are below.';
+ document.querySelector('.compare').innerHTML='<article class="panel" style="grid-column:1/-1"><div class="panel-head"><div><h2 class="panel-title">Your question</h2><p class="panel-sub">What you asked Ask Scan2Study</p></div><span class="pill">QUESTION</span></div><div class="content" id="chatQuestionContent"></div></article><article class="panel" style="grid-column:1/-1"><div class="panel-head"><div><h2 class="panel-title">Ask Scan2Study explains</h2><p class="panel-sub">AI-generated answer</p></div><span class="pill easy">AI ANSWER</span></div><div class="content" id="chatAnswerContent"></div><div class="panel-actions"><button class="btn" id="copyChatAnswer" type="button">Copy answer</button></div></article>';
+ document.getElementById('chatQuestionContent').textContent=packet.question||'Your question';
+ document.getElementById('chatAnswerContent').textContent=packet.answer||'No answer was saved.';
+ document.getElementById('shortcutTip').style.display='none';
+ document.getElementById('qualityTip').querySelector('h2').textContent='Remember';
+ document.getElementById('qualityText').textContent='AI answers can make mistakes. Check important details with your textbook or a trusted teacher.';
+ document.getElementById('copyChatAnswer').addEventListener('click',function(){copyText(packet.answer||'',this)});
+ document.querySelector('.back').href='index.html#ask-scan2study';
+ document.querySelector('.back').textContent='← Back to Ask Scan2Study';
+}
+
+if(packet&&packet.type==='chat'){}else if(!packet||!packet.original){document.getElementById('missingNotice').style.display='block';originalContent.textContent='No study text yet.';easyContent.textContent='Add material on the previous page to create your comparison.';originalContent.classList.add('empty');easyContent.classList.add('empty');document.getElementById('shortcutTip').style.display='none';document.getElementById('qualityTip').style.display='none'}
 else{
 originalContent.textContent=packet.original;easyContent.textContent=packet.easy||packet.original;
 document.getElementById('originalSubtitle').textContent=packet.source==='image'?'Text read from your textbook image':'Text you pasted into the workspace';
