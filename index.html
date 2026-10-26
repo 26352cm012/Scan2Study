@@ -47,12 +47,16 @@ section{scroll-margin-top:24px}.intro{text-align:center;max-width:690px;margin:0
 <label class="option-card" id="shortcutOption"><input type="radio" name="mode" value="shortcut"><div class="option-icon">⚡</div><h3>Quick study shortcut</h3><p>Get an easier version plus a small study tip to help you revise the idea.</p></label>
 </div>
 <div class="generate-row"><button id="generateBtn" class="btn" type="button">Generate easy text <span aria-hidden="true">→</span></button><p id="status" role="status" aria-live="polite">Add an image or paste text to get started.</p></div>
-<p class="privacy">Prototype note: GitHub Pages uses browser-based text recognition. The easy version currently uses simple word substitutions, not an AI model. Check it against your textbook.</p>
+<p class="privacy">AI-powered explanations work when the Flask backend is connected and configured. Otherwise, Scan2Study uses basic word substitutions. When AI is enabled, your study text is sent to the configured AI provider. Do not submit private or sensitive information.</p>
 </div></div></section>
 </main><footer><div class="footer-inner"><span><strong>✦ Scan2Study</strong> · Small steps, clearer learning.</span><span>Made for curious minds 📚</span></div></footer>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+<script src="config.js"></script>
 <script>
+const configuredApiBase=(window.SCAN2STUDY_CONFIG&&window.SCAN2STUDY_CONFIG.apiBaseUrl||"").trim();
+const API_BASE_URL=configuredApiBase.replace(/\/+$/,"");
+function apiUrl(path){return API_BASE_URL+path}
 const fileInput=document.getElementById('fileInput'),dropZone=document.getElementById('dropZone'),chooseBtn=document.getElementById('chooseBtn'),generateBtn=document.getElementById('generateBtn'),textInput=document.getElementById('textInput'),statusText=document.getElementById('status'),fileMeta=document.getElementById('fileMeta'),preview=document.getElementById('preview');
 let selectedFile=null,previewUrl=null;
 function setStatus(message){statusText.textContent=message}
@@ -70,8 +74,51 @@ function browserSimplify(text){
 const replacements=[['due to the fact that','because'],['as a consequence of','because of'],['at this point in time','now'],['for the purpose of','to'],['in the event that','if'],['subsequent to','after'],['prior to','before'],['in addition to','also'],['make use of','use'],['is characterized by','has'],['is defined as','means'],['consists of','is made of'],['approximately','about'],['demonstrates','shows'],['demonstrate','show'],['illustrates','shows'],['facilitate','help'],['utilization','use'],['utilize','use'],['commence','start'],['terminate','end'],['sufficient','enough'],['obtain','get'],['assist','help'],['indicate','show'],['occur','happen'],['essential','important'],['numerous','many'],['individuals','people'],['predominantly','mostly'],['substantial','large'],['fundamental','basic'],['methodology','method'],['synthesize','combine'],['therefore','so'],['however','but'],['consequently','as a result'],['require','need']];
 let result=text;replacements.forEach(function(pair){const phrase=pair[0].split(' ').join('\\s+');const pattern=new RegExp('(?<!\\w)'+phrase+'(?!\\w)','gi');result=result.replace(pattern,function(match){return match.charAt(0)===match.charAt(0).toUpperCase()?pair[1].charAt(0).toUpperCase()+pair[1].slice(1):pair[1]})});return result
 }
-async function backendIsAvailable(){try{const response=await fetch('/api/health',{headers:{'Accept':'application/json'}});if(!response.ok)return false;const data=await response.json();return data.status==='ok'}catch(error){return false}}
-function openResults(original,easy,mode,source){try{sessionStorage.setItem('scan2studyResult',JSON.stringify({original:original,easy:easy||browserSimplify(original),mode:mode,source:source,createdAt:new Date().toISOString()}));window.location.href='result.html'}catch(error){setStatus('Your browser blocked temporary storage. Please allow site storage and try again.');generateBtn.disabled=false;generateBtn.innerHTML='Generate easy text <span aria-hidden="true">→</span>'}}
-generateBtn.addEventListener('click',async function(){const pastedText=textInput.value.trim();if(!selectedFile&&!pastedText){setStatus('Add a textbook image or paste some text first.');return}const mode=document.querySelector('input[name="mode"]:checked').value;generateBtn.disabled=true;generateBtn.textContent='Preparing your study page…';try{let original='',easy='',source='text';if(selectedFile&&await backendIsAvailable()){setStatus('Reading your image with the Scan2Study backend…');const formData=new FormData();formData.append('image',selectedFile);const response=await fetch('/api/process',{method:'POST',body:formData});const payload=await response.json().catch(function(){return {}});if(!response.ok)throw new Error(payload.error||'The backend could not read that image.');original=payload.extracted_text||'';easy=payload.easy_text||browserSimplify(original);source='image'}else if(selectedFile){if(!window.Tesseract)throw new Error('The image reader did not load. Check your internet connection and try again.');setStatus('Reading the textbook image… this can take a little while.');const result=await Tesseract.recognize(selectedFile,'eng',{logger:function(info){if(info.status==='recognizing text'&&info.progress)setStatus('Reading text… '+Math.round(info.progress*100)+'%')}});original=(result.data.text||'').trim();source='image';if(!original)throw new Error('No text found. Try a sharper photo with better lighting.');easy=browserSimplify(original)}else{original=pastedText;easy=browserSimplify(original);source='text'}if(!original.trim())throw new Error('No text was found. Please try a clearer image or paste the text.');openResults(original,easy,mode,source)}catch(error){setStatus(error.message||'Something went wrong. Please try again.');generateBtn.disabled=false;generateBtn.innerHTML='Generate easy text <span aria-hidden="true">→</span>'}});
+async function getBackendHealth(){try{const response=await fetch(apiUrl('/api/health'),{headers:{'Accept':'application/json'}});if(!response.ok)return null;const data=await response.json();return data.status==='ok'?data:null}catch(error){return null}}
+function openResults(original,easy,mode,source,engine,studyTip,notice){try{sessionStorage.setItem('scan2studyResult',JSON.stringify({original:original,easy:easy||browserSimplify(original),mode:mode,source:source,engine:engine||'fallback',studyTip:studyTip||'',notice:notice||'',createdAt:new Date().toISOString()}));window.location.href='result.html'}catch(error){setStatus('Your browser blocked temporary storage. Please allow site storage and try again.');generateBtn.disabled=false;generateBtn.innerHTML='Generate easy text <span aria-hidden="true">→</span>'}}
+generateBtn.addEventListener('click',async function(){
+ const pastedText=textInput.value.trim();
+ if(!selectedFile&&!pastedText){setStatus('Add a textbook image or paste some text first.');return}
+ const mode=document.querySelector('input[name="mode"]:checked').value;
+ generateBtn.disabled=true;generateBtn.textContent='Preparing your study page…';
+ try{
+  let original='',easy='',source='text',engine='fallback',studyTip='',notice='';
+  const backend=await getBackendHealth();
+  if(selectedFile&&backend){
+   setStatus('Reading your image with the Scan2Study backend…');
+   const formData=new FormData();formData.append('image',selectedFile);
+   const response=await fetch(apiUrl('/api/process'),{method:'POST',body:formData});
+   const payload=await response.json().catch(function(){return {}});
+   if(!response.ok)throw new Error(payload.error||'The backend could not read that image.');
+   original=(payload.extracted_text||'').trim();source='image';
+  }else if(selectedFile){
+   if(!window.Tesseract)throw new Error('The image reader did not load. Check your internet connection and try again.');
+   setStatus('Reading the textbook image… this can take a little while.');
+   const result=await Tesseract.recognize(selectedFile,'eng',{logger:function(info){if(info.status==='recognizing text'&&info.progress)setStatus('Reading text… '+Math.round(info.progress*100)+'%')}});
+   original=(result.data.text||'').trim();source='image';
+   if(!original)throw new Error('No text found. Try a sharper photo with better lighting.');
+  }else{original=pastedText;source='text'}
+  if(!original.trim())throw new Error('No text was found. Please try a clearer image or paste the text.');
+  if(backend&&backend.ai_enabled){
+   try{
+    setStatus('Creating a genuinely AI-powered explanation…');
+    const response=await fetch(apiUrl('/api/explain'),{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({text:original,mode:mode})});
+    const payload=await response.json().catch(function(){return {}});
+    if(!response.ok)throw new Error(payload.error||'The AI service is unavailable right now.');
+    if(!payload.easy_text)throw new Error('The AI service returned an empty explanation.');
+    easy=payload.easy_text;studyTip=payload.study_tip||'';engine='ai';
+    notice='AI-generated explanation. Check it against the original for exact facts, formulas, dates, and definitions.';
+   }catch(aiError){
+    easy=browserSimplify(original);engine='fallback';
+    notice=(aiError.message||'The AI service was unavailable.')+' This result uses basic word substitutions instead.';
+    setStatus('AI unavailable — opening a basic-word fallback.');
+   }
+  }else{
+   easy=browserSimplify(original);engine='fallback';
+   notice=backend?'The backend is connected, but its AI key is not configured. This result uses basic word substitutions.':'The AI backend is not connected to this page yet. This result uses basic word substitutions.';
+  }
+  openResults(original,easy,mode,source,engine,studyTip,notice);
+ }catch(error){setStatus(error.message||'Something went wrong. Please try again.');generateBtn.disabled=false;generateBtn.innerHTML='Generate easy text <span aria-hidden="true">→</span>'}
+});
 textInput.addEventListener('input',function(){if(!selectedFile&&textInput.value.trim())setStatus('Text is ready. Choose a study style, then generate.');else if(!selectedFile)setStatus('Add an image or paste text to get started.')});
 </script></body></html>
