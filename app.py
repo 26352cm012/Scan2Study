@@ -1,14 +1,21 @@
 import os
+import time
 from io import BytesIO
 from flask import Flask, jsonify, request, send_from_directory
 from flask_cors import CORS
 from PIL import Image, UnidentifiedImageError
 from ocr import extract_text_from_image, make_study_helpers, simplify_text
+from ai_explanations import AIConfigurationError, AIProviderError, generate_ai_explanation
 
 app = Flask(__name__)
 app.config["MAX_CONTENT_LENGTH"] = 10 * 1024 * 1024
 CORS(app, resources={r"/api/*": {"origins": os.getenv("FRONTEND_ORIGIN", "*")}})
 ALLOWED_MIME_TYPES = {"image/jpeg", "image/png", "image/webp"}
+
+# Lightweight per-process throttle for this public prototype API.
+_AI_CALLS_BY_IP = {}
+_AI_MAX_CALLS_PER_HOUR = 15
+
 
 @app.get("/")
 def home():
@@ -22,7 +29,67 @@ def result_page():
 
 @app.get("/api/health")
 def health():
-    return jsonify({"status": "ok", "service": "Scan2Study API"})
+    return jsonify({
+        "status": "ok",
+        "service": "Scan2Study API",
+        "ai_enabled": bool(os.getenv("OPENAI_API_KEY", "").strip()),
+    })
+
+@app.post("/api/explain")
+def explain_text():
+    data = request.get_json(silent=True)
+    if not isinstance(data, dict):
+        return jsonify({"error": "Send study material as JSON."}), 400
+
+    text = str(data.get("text") or "").strip()
+    mode = data.get("mode", "meaning")
+    if not text:
+        return jsonify({"error": "Add some text to explain first."}), 400
+    if len(text) > 12000:
+        return jsonify({"error": "Please keep study text under 12,000 characters."}), 413
+    if mode not in {"meaning", "shortcut"}:
+        return jsonify({"error": "Choose a valid study mode."}), 400
+    if not os.getenv("OPENAI_API_KEY", "").strip():
+        return jsonify({
+            "error": "The AI service is not configured yet. The site can still use its basic fallback."
+        }), 503
+
+    now = time.time()
+    client_ip = (
+        request.headers.get("X-Forwarded-For", "").split(",")[0].strip()
+        or request.remote_addr
+        or "unknown"
+    )
+    recent_calls = [
+        stamp for stamp in _AI_CALLS_BY_IP.get(client_ip, [])
+        if now - stamp < 3600
+    ]
+    if len(recent_calls) >= _AI_MAX_CALLS_PER_HOUR:
+        return jsonify({
+            "error": "This prototype has reached its AI request limit for this hour. Please try again later."
+        }), 429
+    recent_calls.append(now)
+    _AI_CALLS_BY_IP[client_ip] = recent_calls
+
+    # Periodically discard old client entries to keep the demo's memory bounded.
+    if len(_AI_CALLS_BY_IP) > 1000:
+        _AI_CALLS_BY_IP.clear()
+
+    try:
+        result = generate_ai_explanation(text, mode)
+    except AIConfigurationError:
+        return jsonify({"error": "The AI service is not configured on the backend yet."}), 503
+    except AIProviderError:
+        app.logger.warning("AI provider request failed.")
+        return jsonify({
+            "error": "The AI provider could not create an explanation right now. Please try again."
+        }), 502
+    except Exception:
+        app.logger.exception("Unexpected AI explanation error")
+        return jsonify({"error": "Something went wrong while creating the AI explanation."}), 500
+
+    return jsonify(result)
+
 
 @app.post("/api/process")
 def process_image():
