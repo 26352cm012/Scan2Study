@@ -3,7 +3,7 @@ from io import BytesIO
 from flask import Flask, jsonify, request, send_from_directory
 from flask_cors import CORS
 from PIL import Image, UnidentifiedImageError
-from ocr import extract_text_from_image, make_study_helpers
+from ocr import extract_text_from_image, make_study_helpers, simplify_text
 
 app = Flask(__name__)
 app.config["MAX_CONTENT_LENGTH"] = 10 * 1024 * 1024
@@ -14,6 +14,11 @@ ALLOWED_MIME_TYPES = {"image/jpeg", "image/png", "image/webp"}
 def home():
     """Serve the frontend from the same Flask app as the API."""
     return send_from_directory(app.root_path, "index.html")
+
+@app.get("/result.html")
+def result_page():
+    """Serve the dedicated side-by-side comparison page."""
+    return send_from_directory(app.root_path, "result.html")
 
 @app.get("/api/health")
 def health():
@@ -49,7 +54,8 @@ def process_image():
         "extracted_text": extracted_text,
         "summary": summary,
         "questions": questions,
-        "note": "Summary and practice prompts are rule-based, not AI-generated."
+        "easy_text": simplify_text(extracted_text),
+        "note": "The easy version uses conservative word substitutions; it is not AI-generated and should be checked against the original."
     })
 
 @app.errorhandler(413)
