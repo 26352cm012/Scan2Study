@@ -4,12 +4,10 @@ Scan2Study is a study prototype that helps turn textbook material into easier-to
 
 ## Prototype experience
 
-1. Welcome page with a guided scroll-down flow.
-2. Upload a textbook image or paste text.
-3. Choose **Text meaning** or **Quick study shortcut**.
-4. Open a separate results page with the original material and an easier-to-read version side by side.
-5. Copy either version or download both as a text file.
-6. Use the **Ask Scan2Study** chat section to ask questions and follow up, when the AI backend is configured.
+1. **Page 1:** Welcome page with **Ask Scan2Study** chat visible on the first page.
+2. **Page 2:** Upload a textbook image or paste study material, then choose **Text meaning** or **Quick study shortcut**.
+3. **Page 3:** See the original material beside its easier explanation, or see the answer to a question asked on Page 1.
+4. Copy answers or study text when available; study results can also be downloaded.
 
 ## How it works today
 
