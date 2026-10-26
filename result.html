@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f7f8ff">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0b1020">
 <meta name="description" content="Compare your original study notes with an easier-to-read version."><title>Your study page — Scan2Study</title>
 <style>
 :root{--ink:#18223b;--muted:#68728b;--line:#e4e8f4;--bg:#f7f8ff;--blue:#5365f5;--dark:#3949d8;--paper:#fff;--soft:#efeeff;--green:#e4f8ed;--shadow:0 14px 40px #232c640c}
@@ -12,6 +12,26 @@ header{height:76px;display:flex;align-items:center;justify-content:space-between
 .tip{background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px 20px;margin:0 0 50px;display:flex;gap:14px;align-items:flex-start}.tip-icon{font-size:24px;line-height:1.2}.tip h2{font-size:15px;margin:0 0 4px}.tip p{font-size:13px;color:var(--muted);margin:0}.notice{display:none;margin:0 0 20px;padding:13px 15px;background:#fff8e9;border:1px solid #f5e4b6;border-radius:13px;font-size:13px;color:#78591a}footer{border-top:1px solid var(--line);padding:22px 0;color:var(--muted);font-size:12px}.footer-inner{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
 @media(max-width:760px){.compare{grid-template-columns:1fr}.content{min-height:180px}.hero{padding-top:26px}.panel-head{padding:17px}.content{padding:18px}.panel-actions{padding:0 18px 18px}}
 @media(max-width:500px){.shell{width:calc(100% - 22px)}header{height:66px}.brand{font-size:18px}.mark{width:36px;height:36px}.top-link{font-size:11px}.hero h1{letter-spacing:-1.3px}.panel-head{display:block}.pill{display:inline-block;margin-top:10px}.tip{padding:15px}}
+
+/* Scan2Study dark theme */
+:root{color-scheme:dark;--ink:#edf2ff;--muted:#a7b2cc;--line:#303b55;--bg:#0b1020;--blue:#8290ff;--dark:#6675f4;--paper:#151d31;--soft:#222a45;--shadow:0 18px 56px #0007}
+body{background:var(--bg)!important;color:var(--ink)!important}
+header,footer,.footer-inner{border-color:#28334b!important}
+.brand,.nav-not a,.hero h1,.hero h2,.panel-title,.chat-title,.option-title,.field-label,label,strong{color:var(--ink)}
+p,.muted,.nav-note,.hero-copy,.panel-sub,.tiny-note,.chat-note,.privacy,.step p,.notice{color:var(--muted)}
+.art-card,.step-card,.workspace,.builder-head,.builder-body,.preview,.option-card,.chat-card,.chat-bubble,.panel,.pane,.panel-hea,.notice,.empty,.tip,.chat-input,.chat-prompt,.ask-section,.compar,.content,.file-info,.file-meta,.upload-zone,.field-label+input,.field-label+textarea{background:#151d31!important;color:var(--ink)!important;border-color:#303b55!important}
+input,textarea,select{background:#0e1628!important;color:#edf2ff!important;border:1px solid #394662!important}
+input::placeholder,textarea::placeholder{color:#8e9bb7!important}
+button.secondary,.secondar,.file-button,.prompt-chip,.option{background:#202a43!important;color:#e4eaff!important;border-color:#394662!important}
+a{color:#aab5ff}
+hr,.or-divider{border-color:#303b55!important}
+.upload-zone:hover,.option-card:hover,.prompt-chip:hover{background:#202a43!important}
+.chat-bubble.assistant,.assistant{background:#1c2740!important;color:#edf2ff!important}
+.chat-bubble.user,.user{background:#303b72!important;color:#fff!important}
+.pill,.step-pill{background:#222a45!important;color:#cbd3ff!important;border-color:#3b4665!important}
+.remove-button{background:#2a1b2b!important;color:#ffb8c4!important}
+img,svg{max-width:100%}
+
 </style></head>
 <body><div class="shell">
 <header><a class="brand" href="index.html"><span class="mark">✦</span><span>Scan2Study</span></a><a class="top-link" href="study.html">New study question ↗</a></header>
