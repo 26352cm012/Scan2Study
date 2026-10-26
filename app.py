@@ -1,6 +1,6 @@
 import os
 from io import BytesIO
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, send_from_directory
 from flask_cors import CORS
 from PIL import Image, UnidentifiedImageError
 from ocr import extract_text_from_image, make_study_helpers
@@ -12,8 +12,8 @@ ALLOWED_MIME_TYPES = {"image/jpeg", "image/png", "image/webp"}
 
 @app.get("/")
 def home():
-    return jsonify({"name": "Scan2Study API", "status": "running",
-                    "endpoints": ["/api/health", "/api/process"]})
+    """Serve the frontend from the same Flask app as the API."""
+    return send_from_directory(app.root_path, "index.html")
 
 @app.get("/api/health")
 def health():
