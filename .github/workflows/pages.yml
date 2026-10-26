@@ -6,6 +6,7 @@ on:
     paths:
       - 'index.html'
       - 'result.html'
+      - 'config.js'
       - '.github/workflows/pages.yml'
   workflow_dispatch:
 
