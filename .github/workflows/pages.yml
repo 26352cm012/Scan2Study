@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - 'index.html'
+      - 'study.html'
       - 'result.html'
       - 'config.js'
       - '.github/workflows/pages.yml'
