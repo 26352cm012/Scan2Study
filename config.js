@@ -4,5 +4,5 @@ const API_URL = "";
    When using GitHub Pages, set this to the root URL of your deployed Flask API.
    This value is public configuration only: never put API keys in this file. */
 window.SCAN2STUDY_CONFIG = {
-  apiBaseUrl: ""
+  apiBaseUrl: "https://scan2study-36ew.onrender.com"
 };
