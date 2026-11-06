@@ -45,6 +45,17 @@ hr,.or-divider{border-color:#303b55!important}
 .remove-button{background:#2a1b2b!important;color:#ffb8c4!important}
 img,svg{max-width:100%}
 
+
+/* Visibility/contrast fix: keep the Ask CTA and its supporting copy readable */
+.hero .actions{position:relative;z-index:2;display:flex!important;visibility:visible!important;opacity:1!important}
+.hero .actions .btn{display:inline-flex!important;visibility:visible!important;opacity:1!important;color:#fff!important;background:#5365f5!important;border:1px solid #5365f5!important}
+.hero .actions .btn.secondary{background:#151d31!important;color:#edf2ff!important;border:1px solid #5365f5!important}
+.ask-section{display:block!important;visibility:visible!important;opacity:1!important}
+.ask-wrap{display:grid!important;visibility:visible!important;opacity:1!important;background:#17213a!important;border:1px solid #3a4665!important}
+.ask-copy,.ask-copy h2,.ask-copy p,.ask-benefits,.ask-benefits span{visibility:visible!important;opacity:1!important;color:#edf2ff!important}
+.ask-copy p{color:#b8c4df!important}
+.ask-benefits span:before{color:#75e0ad!important}
+@media(max-width:780px){.ask-wrap{grid-template-columns:1fr!important}.ask-copy{display:block!important}}
 </style>
 </head>
 <body><div class="shell">
