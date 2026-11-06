@@ -123,14 +123,8 @@ async function sendChatQuestion(question){
   if(!response.ok)throw new Error(payload.error||'The AI service is not available yet.');
   if(!payload.answer)throw new Error('I couldn’t get an answer this time. Please try again.');
   pending.remove();
-  try{
-   sessionStorage.setItem('scan2studyResult',JSON.stringify({type:'chat',question:cleanQuestion,answer:payload.answer,engine:payload.engine||'ai',createdAt:new Date().toISOString()}));
-   window.location.href='result.html';
-   return;
-  }catch(storageError){
-   addChatBubble(payload.answer,'assistant');
-   chatHistory=nextHistory.concat([{role:'assistant',content:payload.answer}]).slice(-8);
-  }
+  addChatBubble(payload.answer,'assistant');
+  chatHistory=nextHistory.concat([{role:'assistant',content:payload.answer}]).slice(-10);
  }catch(error){
   pending.remove();
   addChatBubble((error.message||'I couldn’t reach the AI service.')+' If this is the GitHub Pages demo, the Flask backend needs to be deployed and configured in config.js first.','assistant error');
