@@ -148,8 +148,9 @@ def chat():
         result = generate_chat_reply(messages)
     except AIConfigurationError:
         return jsonify({"error": "The AI chat is not configured on the backend yet."}), 503
-    except AIProviderError:
-        app.logger.warning("AI chat provider request failed.")
+    except AIProviderError as exc:
+        # Log the safe provider status/message (never the API key or request body).
+        app.logger.warning("AI chat provider request failed: %s", exc)
         return jsonify({"error": "Ask Scan2Study could not get an answer right now. Please try again."}), 502
     except Exception:
         app.logger.exception("Unexpected AI chat error")
